@@ -73,9 +73,10 @@ separate approved consent/access/retention plan. See [SECURITY.md](../../SECURIT
 ## Non-goals and later scope
 
 No accounts, analytics, subscription/payment flow, or native packaging in M0.
-The MVP excludes tafsīr/translation libraries, prayer features, social networks,
-reader replacement, teacher marketplace, generated recitation, and tajwīd
-certification. Daily goals and reminder features are not part of this agreed scope.
+The MVP excludes tafsīr/translation libraries, prayer features, adhkār, social
+networks, reader replacement, teacher and gamification marketplaces,
+subscription/payment systems, generated recitation, and tajwīd certification.
+Daily goals and reminder features are not part of this agreed scope.
 
 Later proposals include other ajzāʾ, multiple reciters, saved memorized ranges,
 history, weak-area/adaptive testing, and advanced similar-passage testing. They
