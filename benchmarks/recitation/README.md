@@ -3,6 +3,8 @@
 For the larger, three-dataset comparison, see [results](PUBLIC-RESULTS.md) and
 [repeatable test steps](PUBLIC-DATASETS.md).
 
+The follow-up [FastConformer comparison](FASTCONFORMER.md) uses Tilawi as the baseline.
+
 This ASR-004 experiment compares four recognizers using the **same audio**,
 fixed model files, the same reference scope and explicit scoring rules. It is
 an exploratory batch-transcription test, not a complete benchmark of students,
