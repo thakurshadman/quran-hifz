@@ -18,7 +18,7 @@ Juz 29 is the initial scope. Tajwīd assessment is outside the MVP.
 | [PRD v0.1](docs/product/PRD.md) | Product scope, acceptance criteria, and open decisions |
 | [NFR-001](docs/requirements/NFR-001.md) | Measurable quality targets and evidence requirements |
 | [Agent operating model](AGENTS.md) | Delegation and separation of duties |
-| [Contributing](CONTRIBUTING.md) | Tickets, branches, reviews, and human merge gate |
+| [Contributing](CONTRIBUTING.md) | Tickets, branches, reviews, and bounded merge authorization |
 | [Engineering standards](ENGINEERING.md) | Integrity, dependencies, testing, and operations |
 | [Security](SECURITY.md) | Reporting and audio/privacy rules |
 | [Architecture decisions](docs/architecture/adr/README.md) | Decision process and template |
@@ -30,11 +30,15 @@ Juz 29 is the initial scope. Tajwīd assessment is outside the MVP.
 Read the PRD, applicable requirements and ADRs, then the engineering and agent
 rules before implementation. Work from a traceable ticket on a branch. Changes
 require independent review and QA; humans approve product/architecture decisions
-and merge PRs. Do not commit directly to `main`.
+and authorize merges. Bounded low-risk documentation/tooling PRs may be merged
+by an agent under [CONTRIBUTING.md](CONTRIBUTING.md#bounded-merge-preauthorization).
+Do not commit directly to `main`.
 
-Phase 0 validation consists of document/link checks and requirements review.
-Executable CI enforcement is pending **QA-001**; no tests or checks are claimed
-to exist merely because they are described here.
+Documentation tooling validates local links, document structure, requirements
+traceability, and backlog dependencies. Run the [local checks](docs/testing/DOCUMENTATION-CI.md#local-commands)
+before a PR. The same checks and seeded regressions run in GitHub Actions.
+Required-check/approval protection is proposed, not configured by these files;
+see the [current evidence and remaining gate](docs/testing/DOCUMENTATION-CI.md#proposed-repository-protection).
 
 Rust, WASM, frontend framework, speech recognizer, inference location, data
 sources, hosting, and database remain unselected. Future code and data licenses
@@ -43,5 +47,5 @@ also need explicit decisions; public visibility alone does not grant a license.
 ## Planning source
 
 These documents adapt the [shared planning conversation](https://chatgpt.com/share/6ac1905c-d320-83ea-af8f-a2816b4cf3b0).
-The latest agreed step is a governance-only first PR. Numerical additions and
+Phase 0 governance was merged in PR #15; QA-001 adds documentation CI. Numerical additions and
 unresolved choices are identified as proposed or TBD in the relevant document.

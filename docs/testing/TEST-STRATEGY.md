@@ -58,8 +58,10 @@ check. Independently review source-to-document fidelity and open gates. Record
 commands/results and the exact reviewed commit in the PR.
 
 No Rust/TypeScript build, model benchmark, or application E2E test is applicable
-yet. CI is **pending QA-001**; manual document checks are bootstrap evidence, not
-a claim that repository branch protection is enforced.
+yet. QA-001 adds the executable checks and seeded regressions described in
+[DOCUMENTATION-CI.md](DOCUMENTATION-CI.md). Passing CI does not prove that branch
+protection is enforced; the proposed protection and configuration evidence remain
+an explicit external gate.
 
 ## CI evolution and regression policy
 
@@ -76,4 +78,5 @@ quarantined checks do not count as passes.
 
 QA derives expectations separately from the author's tests and reports failures,
 limitations and manual checks. Recheck affected evidence after changes. The final
-approver verifies current-revision results and unresolved findings; humans merge.
+approver verifies current-revision results and unresolved findings. Merge execution
+follows the human authorization in [CONTRIBUTING.md](../../CONTRIBUTING.md#bounded-merge-preauthorization).
