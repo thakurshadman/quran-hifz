@@ -1,0 +1,218 @@
+{
+  "schema_version": 1,
+  "source": {
+    "repo": "RetaSy/quranic_audio_dataset",
+    "revision": "b1fcc39cbc045f367bb07e39025a0e3aaeabf34f"
+  },
+  "selection": {
+    "seed": 20261004,
+    "algorithm": "Random(seed).sample(range(69),20) selects metadata pages of100 rows; preserve page/row order; filter Hafs, labels, duration, text, nonempty reciter ID; same fresh Random(seed) shuffles correct followed by in_correct; then exclude non-Quran/ambiguous Surah categories; take first10 eligible each, max1 per source reciter_id across groups",
+    "metadata_pages": [
+      22,
+      6,
+      38,
+      50,
+      35,
+      24,
+      52,
+      47,
+      45,
+      42,
+      8,
+      30,
+      9,
+      25,
+      66,
+      23,
+      13,
+      62,
+      67,
+      15
+    ],
+    "eligible_candidate_counts": {
+      "correct": 52,
+      "in_correct": 83
+    },
+    "group_counts": {
+      "correct": 10,
+      "in_correct": 10
+    },
+    "duration_seconds": [
+      1,
+      30
+    ],
+    "normalized_reference_words": [
+      1,
+      500
+    ],
+    "recitation_convention": "hafs according to source metadata",
+    "distinct_nonempty_reciter_ids": 20,
+    "speaker_limitations": "Source IDs, not independently verified identities; no claim of representative speaker diversity",
+    "golden_counts": {
+      "false": 18,
+      "true": 2
+    },
+    "exclusions_before_target": {},
+    "deduplicate": "Downloaded audio SHA256 within this subset and against public-datasets.json",
+    "reference": "Unchanged source Aya intended passage; not an independently verified spoken transcript",
+    "labels": "Source final_label correctness judgments; not localized word-error annotations",
+    "total_selected_audio_seconds": 93.749,
+    "allowed_source_surah_labels": [
+      "Al-Asr",
+      "Al-Faatihah",
+      "Al-Falaq",
+      "Al-Fil",
+      "Al-Humazah",
+      "Al-Ikhlas",
+      "Al-Kafiroon",
+      "Al-Kauthar",
+      "Al-Maaoon",
+      "Al-Masad",
+      "Al-NABAA",
+      "Al-Qadr",
+      "An-Nas",
+      "An-Nasr",
+      "Ayat al-Kursi",
+      "Quraish"
+    ],
+    "excluded_source_category_counts": {
+      "Adhan": 10,
+      "At-Tahiyyat": 1,
+      "Subhanaka": 1
+    },
+    "selected_source_surah_counts": {
+      "Al-Faatihah": 12,
+      "Al-Ikhlas": 2,
+      "Al-Kafiroon": 1,
+      "Al-Asr": 1,
+      "Ayat al-Kursi": 1,
+      "An-Nasr": 1,
+      "An-Nas": 1,
+      "Al-Masad": 1
+    },
+    "category_scope": "Source labels only; excludes prayer calls, supplications and ambiguous mixed-passage categories; no canonical-text or qualified-content validation claimed",
+    "pre_inference_correction": "Excluded non-Quran/ambiguous categories before any RetaSy inference; regenerated frozen subset from same candidate order"
+  },
+  "samples": [
+    {
+      "row_index": 3097,
+      "group": "correct",
+      "audio_sha256": "31610b9d621e81c914e090db0e6543e7d702d598a858b902bbecd15029024047",
+      "reference_sha256": "c44ba775d0ba7689a0d97e83a27cd9b5d917cb569f98013518018b591b42c015"
+    },
+    {
+      "row_index": 1586,
+      "group": "correct",
+      "audio_sha256": "32cfe94bc0a9a66771e94f827b663bc0a2f2a79ce03a48b8d1d323eff6495531",
+      "reference_sha256": "f074da07dd467e6e781b017faaf5dd90f37b30a04fd6ee4f56619eb9c7bbc2b8"
+    },
+    {
+      "row_index": 3803,
+      "group": "correct",
+      "audio_sha256": "a03788a09bd8ff61b01443a2e1ae8964374fc4344ed8de2b4e9d8804844ce236",
+      "reference_sha256": "cbc8801f341be47a6c6748a955be7d5304cd178944f1640c9e214eec6c975499"
+    },
+    {
+      "row_index": 4739,
+      "group": "correct",
+      "audio_sha256": "ad8563d56333f38609f3d662f408a330472a089f2a91a18f1d3e69d160c3fdaf",
+      "reference_sha256": "f0d8c0de8bacf529b3e51853fc3a90c2375068a557798c5032a2d1593431f95e"
+    },
+    {
+      "row_index": 4782,
+      "group": "correct",
+      "audio_sha256": "8238c77ac0a6303d41ca333feb025b48ccaa8e7ea5bbc5d92a89ce61ba9d6950",
+      "reference_sha256": "28f44e2afbdcdb9ec700082f82368662684c1e46315ff28b73569eba3aeae542"
+    },
+    {
+      "row_index": 4534,
+      "group": "correct",
+      "audio_sha256": "42317548ba6c39e61fb222a67fb6f43219abc090272a5d5daaf54ac2410c3fe4",
+      "reference_sha256": "46344e038162466d84546a5a75e8c1d1ee796419a6179ee3f1352eaeb71b1dac"
+    },
+    {
+      "row_index": 900,
+      "group": "correct",
+      "audio_sha256": "f2ae5859c5e43dc1f42b078b958f57d36dde8442d32802adf1986cd8ac079754",
+      "reference_sha256": "1f14c856730c135bcec2d7b69d13fb4925c49f9afbcd9109582800437425b0cc"
+    },
+    {
+      "row_index": 2582,
+      "group": "correct",
+      "audio_sha256": "6244af1614625ba854163377884cd116ba00c02dc0164023849572cdccebf3b1",
+      "reference_sha256": "4faf2a97db85d75a58464f0a5d27fdaf28f8e7baca8f137cdacc0d0e8055f38b"
+    },
+    {
+      "row_index": 2408,
+      "group": "correct",
+      "audio_sha256": "a408707d63e6e219f22457696f59561edefb0f4c75158071aafc20e209185821",
+      "reference_sha256": "ee43221a2d70da314a28481e2858b355b84ea76cc5505a17b6d6d8f592ce3dce"
+    },
+    {
+      "row_index": 1557,
+      "group": "correct",
+      "audio_sha256": "7ed55c18b6dd9546ecfd39e6c58c306b42cbdf9da0a0bd9c4d1b4f26dd7e8ca6",
+      "reference_sha256": "f0d8c0de8bacf529b3e51853fc3a90c2375068a557798c5032a2d1593431f95e"
+    },
+    {
+      "row_index": 958,
+      "group": "in_correct",
+      "audio_sha256": "ad24c16b9bfb72841eb9ff63f7d128152a2d5702f12996ddb5fdd1129754beb5",
+      "reference_sha256": "08e9381cc33d5d88bc4ab562e3e2e6598814594157a0f45bfdc0464ef8f78ee3"
+    },
+    {
+      "row_index": 5015,
+      "group": "in_correct",
+      "audio_sha256": "bf3f0262cc59e8778dfabc98461a2c0b8d7f3f0f0cf886ee2767551361c61e2e",
+      "reference_sha256": "968163245a327a0a15fa63bfe7c825f23562f0b1c409b03b2b9750f362b27fd0"
+    },
+    {
+      "row_index": 1333,
+      "group": "in_correct",
+      "audio_sha256": "37e6ba9bc8c9b2e2dec0656ab00fcf83f7629885df7f49f7b16a66f1d054e388",
+      "reference_sha256": "0055df95f522289469a3b8c51da1a15352066e4ffb52ce4e460593b75c1f6cdb"
+    },
+    {
+      "row_index": 3834,
+      "group": "in_correct",
+      "audio_sha256": "a68138f7087f62246860bd3f5aa247572dd49108a359464b7f7c296b1f9b26e3",
+      "reference_sha256": "08e9381cc33d5d88bc4ab562e3e2e6598814594157a0f45bfdc0464ef8f78ee3"
+    },
+    {
+      "row_index": 4251,
+      "group": "in_correct",
+      "audio_sha256": "7be526dde8a9a4613008a05a7d7935d2d9a570a1cc53a628c234180d8c62eee7",
+      "reference_sha256": "c44ba775d0ba7689a0d97e83a27cd9b5d917cb569f98013518018b591b42c015"
+    },
+    {
+      "row_index": 3869,
+      "group": "in_correct",
+      "audio_sha256": "96ece84866bc10b88eeae320b1db79da18687119df6fd72959938b45bf0c7b75",
+      "reference_sha256": "1ecbc537438cbc12f9f6a71f12c1472312e3e618d16abf44929430c81c49a802"
+    },
+    {
+      "row_index": 3527,
+      "group": "in_correct",
+      "audio_sha256": "11ce3175600cffc4e7f20851b5cf2a14f58cb234613cde60a19a4067ede2dbf1",
+      "reference_sha256": "968163245a327a0a15fa63bfe7c825f23562f0b1c409b03b2b9750f362b27fd0"
+    },
+    {
+      "row_index": 5068,
+      "group": "in_correct",
+      "audio_sha256": "aa5f80677a1f6e779b8f880653d1b4b232c1c8360155711e09ca033308427c89",
+      "reference_sha256": "f578745163a95bf378c710b541fe5a9cc385320dc27fb909157af318cdfe5b64"
+    },
+    {
+      "row_index": 2491,
+      "group": "in_correct",
+      "audio_sha256": "058f59ae9c48f0c26e88c33609f0e0c3ae67709f758d0a17c5c761f6a776609f",
+      "reference_sha256": "cbc8801f341be47a6c6748a955be7d5304cd178944f1640c9e214eec6c975499"
+    },
+    {
+      "row_index": 1313,
+      "group": "in_correct",
+      "audio_sha256": "d4bcc9eba7a5fb4a2fbfd2d4afd3be16791c080b9d5b0f211f727d3e1681fd56",
+      "reference_sha256": "968163245a327a0a15fa63bfe7c825f23562f0b1c409b03b2b9750f362b27fd0"
+    }
+  ]
+}
