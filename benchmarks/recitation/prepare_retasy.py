@@ -19,6 +19,13 @@ from scoring import normalize
 SOURCE = {"repo": "RetaSy/quranic_audio_dataset",
           "revision": "b1fcc39cbc045f367bb07e39025a0e3aaeabf34f"}
 GROUPS = {"correct": 10, "in_correct": 10}
+# Source labels only, not a canonical text mapping or a content-review claim.
+# Prayer calls, supplications and ambiguous mixed passages are out of scope.
+QURAN_SOURCE_LABELS = frozenset({
+    "Al-Humazah", "Al-Faatihah", "Al-Asr", "Al-Ikhlas", "Al-Kafiroon", "An-Nasr",
+    "Al-Falaq", "Al-Kauthar", "An-Nas", "Al-Qadr", "Ayat al-Kursi", "Al-Maaoon",
+    "Al-NABAA", "Al-Fil", "Al-Masad", "Quraish",
+})
 
 
 def source_row(index):
@@ -40,7 +47,7 @@ def source_row(index):
     return row, url
 
 
-def validate_row(row, group):
+def _validate_metadata(row, group):
     reference, speaker = row["Aya"], row["reciter_id"]
     if (group not in GROUPS or row["final_label"] != group or row["reciter_qiraah"] != "hafs"
             or not isinstance(reference, str) or len(reference) > 20000
@@ -53,6 +60,13 @@ def validate_row(row, group):
     return reference, speaker
 
 
+def validate_row(row, group):
+    reference, speaker = _validate_metadata(row, group)
+    if row.get("Surah") not in QURAN_SOURCE_LABELS:
+        raise ValueError("Non-Quran or ambiguous source passage category")
+    return reference, speaker
+
+
 def candidate_order(records, seed=20261004):
     """Initial selection order only; reruns use frozen row IDs, never substitutes."""
     groups = {group: [] for group in GROUPS}
@@ -60,15 +74,17 @@ def candidate_order(records, seed=20261004):
         try:
             row = record["row"]
             group = row["final_label"]
-            validate_row(row, group)
+            _validate_metadata(row, group)
             if record.get("truncated_cells"):
                 continue
             groups[group].append(record)
         except (ValueError, KeyError, TypeError):
             continue
     generator = random.Random(seed)
-    for candidates in groups.values():
+    for group, candidates in groups.items():
         generator.shuffle(candidates)
+        groups[group] = [record for record in candidates
+                         if record["row"].get("Surah") in QURAN_SOURCE_LABELS]
     return groups
 
 
@@ -96,7 +112,7 @@ def prepare(lock, destination):
         raise ValueError("Unsupported frozen subset")
     destination.mkdir(parents=True, mode=0o700)
     samples, speakers, hashes = [], set(), existing_audio_hashes()
-    golden = Counter()
+    golden, surahs = Counter(), Counter()
     with tempfile.TemporaryDirectory(prefix="retasy-decode-") as temporary:
         temporary = outside_checkout(temporary)
         for item in lock["samples"]:
@@ -121,10 +137,13 @@ def prepare(lock, destination):
             speakers.add(speaker)
             hashes.add(digest)
             golden[str(row["golden"]).lower()] += 1
+            surahs[row["Surah"]] += 1
             samples.append({"id": sample_id, "group": item["group"], "audio_path": str(audio),
                             "audio_sha256": digest, "reference_text": reference})
     if (dict(golden) != lock["selection"]["golden_counts"]
-            or len(speakers) != lock["selection"]["distinct_nonempty_reciter_ids"]):
+            or len(speakers) != lock["selection"]["distinct_nonempty_reciter_ids"]
+            or dict(surahs) != lock["selection"]["selected_source_surah_counts"]
+            or sorted(QURAN_SOURCE_LABELS) != lock["selection"]["allowed_source_surah_labels"]):
         raise ValueError("Source label metadata changed")
     manifest = {"schema_version": 1, "dataset": {"id": "retasy", "revision": SOURCE["revision"],
                 "selection": lock["selection"]}, "samples": samples}

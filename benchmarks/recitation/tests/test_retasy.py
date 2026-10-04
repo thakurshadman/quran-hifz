@@ -19,10 +19,41 @@ import prepare_retasy as retasy
 def source_row(index=0):
     return {"Aya": f"PRIVATE_REFERENCE_{index}", "reciter_id": f"PRIVATE_SPEAKER_{index}",
             "final_label": "correct" if index < 10 else "in_correct", "reciter_qiraah": "hafs",
-            "golden": index < 10, "duration_ms": 2000}
+            "golden": index < 10, "duration_ms": 2000, "Surah": "Al-Faatihah"}
 
 
 class RetaSySourceTests(unittest.TestCase):
+    def test_prayer_calls_supplications_and_ambiguous_categories_rejected(self):
+        for category in ("Adhan", "Tashahhud", "Dua", "Other", "Mixed", "", None):
+            with self.subTest(category=category), self.assertRaises(ValueError):
+                retasy.validate_row({**source_row(), "Surah": category}, "correct")
+        row = source_row()
+        del row["Surah"]
+        with self.assertRaises(ValueError):
+            retasy.validate_row(row, "correct")
+
+    def test_declared_quran_categories_allowed(self):
+        self.assertEqual(len(retasy.QURAN_SOURCE_LABELS), 16)
+        self.assertIn("Al-Faatihah", retasy.QURAN_SOURCE_LABELS)
+        self.assertIn("Ayat al-Kursi", retasy.QURAN_SOURCE_LABELS)
+        for category in retasy.QURAN_SOURCE_LABELS:
+            with self.subTest(category=category):
+                self.assertEqual(retasy.validate_row({**source_row(), "Surah": category}, "correct"),
+                                 ("PRIVATE_REFERENCE_0", "PRIVATE_SPEAKER_0"))
+
+    def test_category_filter_preserves_seeded_candidate_order_after_shuffle(self):
+        records = [{"row_idx": index, "row": source_row(index)} for index in range(20)]
+        original_order = retasy.candidate_order(records)
+        excluded = {1, 4, 12, 18}
+        for record in records:
+            if record["row_idx"] in excluded:
+                record["row"]["Surah"] = "Adhan"
+        actual = retasy.candidate_order(records)
+        for group in ("correct", "in_correct"):
+            expected_ids = [record["row_idx"] for record in original_order[group]
+                            if record["row_idx"] not in excluded]
+            self.assertEqual([record["row_idx"] for record in actual[group]], expected_ids)
+
     def test_candidate_order_is_repeatable_seeded_and_preserves_input(self):
         records = [{"row_idx": index, "row": source_row(index)} for index in range(20)]
         unchanged = copy.deepcopy(records)
@@ -108,7 +139,9 @@ class RetaSyPreparationTests(unittest.TestCase):
         self.payloads = [f"synthetic audio placeholder {index}".encode() for index in range(20)]
         self.lock = {"schema_version": 1, "source": copy.deepcopy(retasy.SOURCE),
                      "selection": {"golden_counts": {"true": 10, "false": 10},
-                                   "distinct_nonempty_reciter_ids": 20},
+                                   "distinct_nonempty_reciter_ids": 20,
+                                   "selected_source_surah_counts": {"Al-Faatihah": 20},
+                                   "allowed_source_surah_labels": sorted(retasy.QURAN_SOURCE_LABELS)},
                      "samples": [{"row_index": index, "group": row["final_label"],
                                   "reference_sha256": retasy.text_hash(row["Aya"]),
                                   "audio_sha256": hashlib.sha256(self.payloads[index]).hexdigest()}
@@ -196,6 +229,28 @@ class RetaSyPreparationTests(unittest.TestCase):
 
     def test_changed_golden_metadata_blocks_manifest(self):
         self.rows[0]["golden"] = False
+        with self.assertRaises(ValueError):
+            self.run_prepare()
+        self.assertFalse((self.destination / "retasy.json").exists())
+
+    def test_non_quran_category_aborts_before_audio_download(self):
+        self.rows[0]["Surah"] = "Adhan"
+        with mock.patch.object(retasy, "source_row", return_value=(self.rows[0], "https://example.invalid")), \
+                mock.patch.object(retasy, "fetch") as fetch, \
+                mock.patch.object(retasy, "existing_audio_hashes", return_value=set()), \
+                self.assertRaises(ValueError):
+            retasy.prepare(self.lock, self.destination)
+        fetch.assert_not_called()
+        self.assertEqual(list(self.destination.iterdir()), [])
+
+    def test_changed_source_category_counts_or_allowlist_block_manifest(self):
+        self.rows[0]["Surah"] = "Al-Ikhlas"
+        with self.assertRaises(ValueError):
+            self.run_prepare()
+        self.assertFalse((self.destination / "retasy.json").exists())
+        self.rows[0]["Surah"] = "Al-Faatihah"
+        self.destination = self.root / "changed-allowlist"
+        self.lock["selection"]["allowed_source_surah_labels"].append("Adhan")
         with self.assertRaises(ValueError):
             self.run_prepare()
         self.assertFalse((self.destination / "retasy.json").exists())

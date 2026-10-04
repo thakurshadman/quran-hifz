@@ -48,7 +48,9 @@ list is in [retasy-samples.json](retasy-samples.json). Seed: `20261004`.
   necessarily a unique speaker. Empty tags do not prove correct recitation.
 - RetaSy: select 10 clips labelled `correct` and 10 labelled `in_correct`, Hafs
   only, with no repeated source speaker ID. Use a seeded subset of metadata
-  pages and seeded shuffling before selection. These are dataset labels, not
+  pages and seeded shuffling before selection. Accept only the clear Qur’an
+  passage labels listed in the lock; exclude adhān and other prayer categories.
+  These are dataset labels, not
   our independently verified judgments or word-by-word spoken transcripts.
 - All three: recordings must be 1–30 seconds and have 1–500 normalized reference
   words. Remove exact duplicate downloaded audio across the samples. Longer

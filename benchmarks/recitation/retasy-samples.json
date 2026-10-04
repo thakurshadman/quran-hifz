@@ -6,7 +6,7 @@
   },
   "selection": {
     "seed": 20261004,
-    "algorithm": "Random(seed).sample(range(69),20) selects metadata pages of100 rows; preserve page/row order; candidate_order filters eligibility then same fresh Random(seed) shuffles correct followed by in_correct; take first10 eligible each, max1 per nonempty source reciter_id across groups",
+    "algorithm": "Random(seed).sample(range(69),20) selects metadata pages of100 rows; preserve page/row order; filter Hafs, labels, duration, text, nonempty reciter ID; same fresh Random(seed) shuffles correct followed by in_correct; then exclude non-Quran/ambiguous Surah categories; take first10 eligible each, max1 per source reciter_id across groups",
     "metadata_pages": [
       22,
       6,
@@ -30,8 +30,8 @@
       15
     ],
     "eligible_candidate_counts": {
-      "correct": 60,
-      "in_correct": 87
+      "correct": 52,
+      "in_correct": 83
     },
     "group_counts": {
       "correct": 10,
@@ -56,7 +56,42 @@
     "deduplicate": "Downloaded audio SHA256 within this subset and against public-datasets.json",
     "reference": "Unchanged source Aya intended passage; not an independently verified spoken transcript",
     "labels": "Source final_label correctness judgments; not localized word-error annotations",
-    "total_selected_audio_seconds": 100.63400000000001
+    "total_selected_audio_seconds": 93.749,
+    "allowed_source_surah_labels": [
+      "Al-Asr",
+      "Al-Faatihah",
+      "Al-Falaq",
+      "Al-Fil",
+      "Al-Humazah",
+      "Al-Ikhlas",
+      "Al-Kafiroon",
+      "Al-Kauthar",
+      "Al-Maaoon",
+      "Al-Masad",
+      "Al-NABAA",
+      "Al-Qadr",
+      "An-Nas",
+      "An-Nasr",
+      "Ayat al-Kursi",
+      "Quraish"
+    ],
+    "excluded_source_category_counts": {
+      "Adhan": 10,
+      "At-Tahiyyat": 1,
+      "Subhanaka": 1
+    },
+    "selected_source_surah_counts": {
+      "Al-Faatihah": 12,
+      "Al-Ikhlas": 2,
+      "Al-Kafiroon": 1,
+      "Al-Asr": 1,
+      "Ayat al-Kursi": 1,
+      "An-Nasr": 1,
+      "An-Nas": 1,
+      "Al-Masad": 1
+    },
+    "category_scope": "Source labels only; excludes prayer calls, supplications and ambiguous mixed-passage categories; no canonical-text or qualified-content validation claimed",
+    "pre_inference_correction": "Excluded non-Quran/ambiguous categories before any RetaSy inference; regenerated frozen subset from same candidate order"
   },
   "samples": [
     {
@@ -90,12 +125,6 @@
       "reference_sha256": "28f44e2afbdcdb9ec700082f82368662684c1e46315ff28b73569eba3aeae542"
     },
     {
-      "row_index": 3018,
-      "group": "correct",
-      "audio_sha256": "a2525a3573202340f4b0bf6b5fdde77afd70fc0fcbab21f14067eb84def85cff",
-      "reference_sha256": "f9e254c037536f55892659050f58f1e145c442d9862599596daf9caa1717ddff"
-    },
-    {
       "row_index": 4534,
       "group": "correct",
       "audio_sha256": "42317548ba6c39e61fb222a67fb6f43219abc090272a5d5daaf54ac2410c3fe4",
@@ -118,6 +147,12 @@
       "group": "correct",
       "audio_sha256": "a408707d63e6e219f22457696f59561edefb0f4c75158071aafc20e209185821",
       "reference_sha256": "ee43221a2d70da314a28481e2858b355b84ea76cc5505a17b6d6d8f592ce3dce"
+    },
+    {
+      "row_index": 1557,
+      "group": "correct",
+      "audio_sha256": "7ed55c18b6dd9546ecfd39e6c58c306b42cbdf9da0a0bd9c4d1b4f26dd7e8ca6",
+      "reference_sha256": "f0d8c0de8bacf529b3e51853fc3a90c2375068a557798c5032a2d1593431f95e"
     },
     {
       "row_index": 958,
