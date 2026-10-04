@@ -2,7 +2,7 @@
 
 The first test used one recording. This follow-up compares the same four models
 on **120 public clips: 50 OpenSLR clips, 50 error-dataset clips and 20 RetaSy clips**.
-It is a small exploratory
+See the [completed results](PUBLIC-RESULTS.md). This is a small exploratory
 comparison. It does not establish learner mistake detection or phone performance.
 
 ## Sources investigated
@@ -60,6 +60,12 @@ The selected error-dataset clips cover 29 source recordings: 20 clips have tags
 and 30 do not. Of the 20 tagged clips, 15 have `Letters`, five `Tajweed`, two
 `Wording`, and one `Tashkeel` tags; categories overlap. Only two clips carry a
 wording tag, so this sample cannot establish reliable word-mistake detection.
+
+Source categories do not verify actual content. One selected RetaSy reference
+is an opening invocation under a Qur’an category, and several use different
+Arabic spellings. We retained these supplied references and scoring unchanged;
+these differences can affect results. No spoken-transcript or qualified content
+verification was performed.
 
 We did not tune or train models using these clips. Upstream training overlap is
 unknown, and exact-byte checks cannot detect the same recording in another
