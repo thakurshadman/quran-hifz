@@ -82,6 +82,11 @@ once, with two compute threads, zero warmups and one pass through the list.
 Model versions and decoding match the original comparison. No model receives
 the expected text as a prompt.
 
+Whisper generation is capped at 128 new tokens, as in the first comparison.
+That can truncate a long transcription even when its audio fits within 30 seconds.
+Such differences remain in the totals; a completed run does not prove that every
+transcript was complete.
+
 ## What the numbers mean
 
 The reference is the dataset's expected passage, unchanged. We apply the same
