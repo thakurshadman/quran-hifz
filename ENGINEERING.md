@@ -77,8 +77,10 @@ single-device result into a product claim.
 ## Ownership and operations
 
 The human repository owner assigns technical and Qur’an-content reviewers;
-none are assumed assigned by this document. Agents own bounded tasks, not merge
-authority. Before production, document service ownership, alerting, deployment,
+none are assumed assigned by this document. Agents own bounded tasks; merge
+execution is limited to the human preauthorization in
+[CONTRIBUTING.md](CONTRIBUTING.md#bounded-merge-preauthorization).
+Before production, document service ownership, alerting, deployment,
 rollback, data deletion, incident response, and recovery procedures. Hosting and
 CI provider selection require their own decisions. No deployment is included in
 Phase 0.

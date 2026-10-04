@@ -29,7 +29,10 @@ Distinguish passed, failed, unavailable, and not applicable checks.
 - Findings, fix commits, and reviewer verification:
 - QA and validated commit:
 - CI status (or bootstrap limitation):
-- Independent final readiness assessment:
+- Independent final readiness assessment and risk rating:
+- Merge authority: human merge, or bounded preauthorization and why it applies:
+- Exact PR head / passing GitHub CI / expected-head SHA guard:
+- Deferred external protection gate (if any):
 - Human product/architecture decisions still needed:
 
 Agent assessments using the author's GitHub account are not separate-account
@@ -43,4 +46,5 @@ GitHub approvals. Leave this distinction explicit.
 - [ ] Dependencies justified and architectural ADRs accepted where required
 - [ ] Documentation and applicable privacy/integrity review complete
 - [ ] Independent review findings resolved and current-revision QA recorded
-- [ ] Human review/merge pending; no agent self-approval or auto-merge
+- [ ] Merge authority and risk assessed under CONTRIBUTING; no self-approval,
+      bypass, direct main push, or unapproved product/architecture decision

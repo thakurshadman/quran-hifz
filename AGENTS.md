@@ -17,12 +17,12 @@ must be reviewed by the human owner before dependent implementation begins.
 
 | Role | Responsibility | Boundary |
 | --- | --- | --- |
-| Human owner | Product scope, architectural acceptance, budget, final merge | Retains decision authority |
+| Human owner | Product scope, architectural acceptance, budget, merge authorization | Retains decision authority |
 | Lead | Decompose approved work, assign bounded tasks, assemble evidence | Cannot replace independent review with self-review |
 | Author | Implement ticket, add appropriate tests, open PR, fix findings | Cannot approve own change |
 | Independent reviewer | Derive expectations from requirements/ADRs, then inspect diff | Must use a context separate from author; reports findings rather than editing implementation |
 | QA | Independently verify acceptance criteria and regressions | Must use a context separate from author; cannot weaken tests |
-| Final approver | Check review resolution, QA, checks, and risks | Separate from author; recommend readiness, never substitute for human merge |
+| Final approver | Check review resolution, QA, checks, and risks | Separate from author; assess readiness within the human-authorized merge scope |
 
 Use subagents for independent review, QA, and final readiness assessment when
 available. Give each the ticket, requirement/ADR paths, scope, and commit or diff
@@ -47,7 +47,11 @@ without the authority applicable to the parent task.
 6. Author responds with the fix and commit. Reviewer verifies before resolving.
 7. QA independently validates acceptance criteria on the current revision.
 8. Run applicable CI; final approver checks all evidence against the current head.
-9. Human reviews outcomes and merges. Agents do not merge or enable auto-merge.
+9. Human reviews outcomes and merges unless the bounded preauthorization in
+   [CONTRIBUTING.md](CONTRIBUTING.md#bounded-merge-preauthorization) applies.
+   Within that scope an agent may perform an ordinary PR merge only after the
+   independent final readiness assessment and passing CI on the current head.
+   Do not enable GitHub auto-merge or change settings under this authorization.
 
 Any substantive update invalidates affected review/QA evidence until rechecked.
 Record reviewed commit IDs and agent roles in the PR history. Agent assessments
