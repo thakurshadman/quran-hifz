@@ -1,0 +1,188 @@
+{
+  "schema_version": 1,
+  "models": {
+    "tilawi": {
+      "repo": "muhdur/tilawi-fastconformer-quran",
+      "revision": "e9448a0e84f3adb64c28b7a8db501dd8e0e59a84",
+      "license": "CC-BY-4.0",
+      "files": [
+        {
+          "path": "SHA256SUMS",
+          "bytes": 338,
+          "sha256": "eb59372b6027b73d4c1d2c6e1d939412b830642b3f5e22d9617e042e6b4b8142"
+        },
+        {
+          "path": "TANZIL-NOTICE.txt",
+          "bytes": 1818,
+          "sha256": "d6969b1f032628ed72e8d06fd5cc976ae3b88f3348f08ff08458676f072a797d"
+        },
+        {
+          "path": "fastconformer_full_mixed.onnx",
+          "bytes": 88307366,
+          "sha256": "4767182cd92975869f81a7e32700b14ca2b04e8dc97a15ff220a8697f4639488"
+        },
+        {
+          "path": "quran.json",
+          "bytes": 3186385,
+          "sha256": "6e6f31f642c701b49a1ba090311ca4c7a97c6a5b79a302712dff815a9d7b3d03"
+        },
+        {
+          "path": "vocab.json",
+          "bytes": 21062,
+          "sha256": "c55877f3bff8bc3aaefc160e8c2fb88cb349088d092513d40210ccfe535e671b"
+        }
+      ]
+    },
+    "tiny": {
+      "repo": "Xenova/whisper-tiny",
+      "revision": "5332fcc35e32a33b86612b9a57a89be7906102b1",
+      "license": "Apache-2.0",
+      "files": [
+        {
+          "path": "config.json",
+          "bytes": 2248,
+          "sha256": "2b2e4e519084e0ea028b19b153f95202735a971870d6844aa26e559edd292e94"
+        },
+        {
+          "path": "generation_config.json",
+          "bytes": 3716,
+          "sha256": "68ac791fcb4999461a313472125042934656240ba1cba7d1c2627fcbb19ac24c"
+        },
+        {
+          "path": "onnx/decoder_model_merged_quantized.onnx",
+          "bytes": 30727765,
+          "sha256": "6c0c125986b007d2e3734bec84c18bda0152071b90b87fadac6d7764499927a0"
+        },
+        {
+          "path": "onnx/encoder_model_quantized.onnx",
+          "bytes": 10124910,
+          "sha256": "fd9d995b9dcb0520f0dbf6cf68651af639fc385f594d9d876e69ca2802dc438e"
+        },
+        {
+          "path": "preprocessor_config.json",
+          "bytes": 339,
+          "sha256": "a6a76d28c93edb273669eb9e0b0636a2bddbb1272c3261e47b7ca6dfdbac1b8d"
+        },
+        {
+          "path": "tokenizer.json",
+          "bytes": 2480466,
+          "sha256": "27fc476bfe7f17299480be2273fc0608e4d5a99aba2ab5dec5374b4482d1a566"
+        },
+        {
+          "path": "tokenizer_config.json",
+          "bytes": 282683,
+          "sha256": "2a4c4281cf9f51ac6ccc406fdc711a087afe6530f671fa7b80953edc498275ce"
+        }
+      ]
+    },
+    "tarteel": {
+      "repo": "tarteel-ai/whisper-base-ar-quran",
+      "revision": "5c3c53fdf9272c4f6ee0bee09a1e5a4a615ee25c",
+      "license": "Apache-2.0",
+      "files": [
+        {
+          "path": "added_tokens.json",
+          "bytes": 2108,
+          "sha256": "5687ef031827f4c9fa3e7cbdd7fd915de0d6c7c6416463a28c63cbe1cf99a07a"
+        },
+        {
+          "path": "config.json",
+          "bytes": 1000,
+          "sha256": "31e690221f47d7505f9d14c807a241c941aef7815ba1132654f1b7feea2cdbae"
+        },
+        {
+          "path": "merges.txt",
+          "bytes": 493864,
+          "sha256": "78f27f801feb4283ae969d4cadacb28fc051b655647402b1a252c7079ea11c46"
+        },
+        {
+          "path": "normalizer.json",
+          "bytes": 52666,
+          "sha256": "bf1c507dc8724ca9cf9903640dacfb69dae2f00edee4f21ceba106a7392f26dd"
+        },
+        {
+          "path": "preprocessor_config.json",
+          "bytes": 184990,
+          "sha256": "9b5cd03a36fbb8a627c64d98a5b5b126ead95a77720723944487311f0110b666"
+        },
+        {
+          "path": "pytorch_model.bin",
+          "bytes": 290458721,
+          "sha256": "ec75894993a4570a237b2b1c19fd8a448f1e8f6e083cfab699574f7be53874fa"
+        },
+        {
+          "path": "special_tokens_map.json",
+          "bytes": 2064,
+          "sha256": "87870d95726faac1641b583cbbb6d8a0c22deab726bcaeac9bb06c350bc638b1"
+        },
+        {
+          "path": "tokenizer_config.json",
+          "bytes": 827,
+          "sha256": "70e1ec9195ccd4baebf920c7e9f8cdd90f37a2b8aebcf305095c2dff074d1260"
+        },
+        {
+          "path": "vocab.json",
+          "bytes": 1036558,
+          "sha256": "e2aa043ef015641d363d8288e7c241c85e36a5c761fb303598e0710233344387"
+        }
+      ]
+    },
+    "quran-turbo": {
+      "repo": "naazimsnh02/whisper-large-v3-turbo-ar-quran",
+      "revision": "670f826cf3731ae9f6b3f54d4a417d8f600e2cd2",
+      "license": "Apache-2.0",
+      "files": [
+        {
+          "path": "added_tokens.json",
+          "bytes": 34648,
+          "sha256": "3c51f66c4c21f9e126970078f11ae77a78c74aee8df606ee9daba86e467108e0"
+        },
+        {
+          "path": "config.json",
+          "bytes": 1259,
+          "sha256": "2e0c274106a73ad49573aefbf6a92e51d66ad45dc2fd74d5055fb797cabc9bf9"
+        },
+        {
+          "path": "merges.txt",
+          "bytes": 493869,
+          "sha256": "2df2990a395e35e8dfbc7511e08c12d56018d8d04691e0133e5d63b21e154dc6"
+        },
+        {
+          "path": "model.safetensors",
+          "bytes": 1617824864,
+          "sha256": "9382f46802a250d79c3fe1fa9f3771da9b44f8ca4488ba7915e5220de5f31961"
+        },
+        {
+          "path": "normalizer.json",
+          "bytes": 52666,
+          "sha256": "bf1c507dc8724ca9cf9903640dacfb69dae2f00edee4f21ceba106a7392f26dd"
+        },
+        {
+          "path": "preprocessor_config.json",
+          "bytes": 356,
+          "sha256": "5edb479d77c717d4a62952075bfe411336340759275c6f7a847dedea81333898"
+        },
+        {
+          "path": "special_tokens_map.json",
+          "bytes": 2072,
+          "sha256": "1c70773c078cb2ca96e0fcff113102f1d3e2b1504272c3bb63b035d4a6700d87"
+        },
+        {
+          "path": "tokenizer.json",
+          "bytes": 3931381,
+          "sha256": "5a47b463cf9e79fdb8aa9e0129211da87d93f2d1ec00ec489d8e54a0452c6d30"
+        },
+        {
+          "path": "tokenizer_config.json",
+          "bytes": 282898,
+          "sha256": "b573a59a85eb24ad6a2a883d37ff9da70eda2e1a087b6ac63a8b0778957140a6"
+        },
+        {
+          "path": "vocab.json",
+          "bytes": 835528,
+          "sha256": "6788c80b082e9b0d1393147d3a3e62ba19285ac0c82ace8e5ef00f37ead58971"
+        }
+      ]
+    }
+  }
+}
