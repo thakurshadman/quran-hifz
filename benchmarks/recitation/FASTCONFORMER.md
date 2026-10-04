@@ -8,6 +8,70 @@ training, model files and decoding methods.
 This experiment supports [ASR-004 #7](https://github.com/thakurshadman/quran-hifz/issues/7).
 It does not change the app or select its production architecture.
 
+## Results
+
+**Mohammed’s FastConformer matched more clips in the error dataset and RetaSy;
+Tilawi matched more in OpenSLR.** Keep Tilawi as the reference baseline and
+include Mohammed’s model in the next test of known skipped or changed words.
+This small comparison does not establish a general winner.
+
+All **240 transcriptions completed**, with no processing failures in the full
+run. Tilawi’s word counts and exact matches reproduced its previous results
+on every clip. An exact match means agreement with the supplied passage after
+normalization, not proof that the recitation was correct.
+
+| Model | OpenSLR (50) | Error dataset (50) | RetaSy (20) |
+| --- | ---: | ---: | ---: |
+| Tilawi | 47/50 | 29/50 | 6/20 |
+| Mohammed FastConformer | 43/50 | 36/50 | 7/20 |
+
+Word differences count substituted, missing and added words, divided by total
+reference words. Lower is closer to the supplied text. These are not verified
+recognition error rates or learner mistake-detection scores.
+
+| Model | OpenSLR (664 words) | Error dataset (249 words) | RetaSy (88 words) |
+| --- | ---: | ---: | ---: |
+| Tilawi | 3.01% | 37.35% | 43.18% |
+| Mohammed FastConformer | 3.77% | 33.73% | 31.82% |
+
+The source-label groups show exact text matches, not validated error detection:
+
+| Model | Error tags (20) | No error tags (30) | RetaSy “correct” (10) | RetaSy “in_correct” (10) |
+| --- | ---: | ---: | ---: | ---: |
+| Tilawi | 10/20 | 19/30 | 5/10 | 1/10 |
+| Mohammed FastConformer | 11/20 | 25/30 | 6/10 | 1/10 |
+
+Median processing seconds per clip:
+
+| Model | OpenSLR | Error dataset | RetaSy |
+| --- | ---: | ---: | ---: |
+| Tilawi | 0.681 | 0.175 | 0.150 |
+| Mohammed FastConformer | 0.646 | 0.234 | 0.238 |
+
+Tilawi’s timer covers ONNX inference before CTC text decoding. NeMo’s covers
+feature processing, inference and RNNT text decoding through its transcription
+call. Downloads, loading and common audio conversion are excluded. Different
+timer scopes and runtimes limit speed comparisons. This is not a phone test.
+
+### Recorded evidence
+
+The [complete report](published/fastconformer-120.json) includes every clip’s
+counts, per-source and per-label totals, timings, model versions, settings and
+hashes. It contains no audio, reference text, transcriptions or speaker IDs.
+
+- Run date: 2026-10-04; clean executing commit
+  `6897e7aaa7debc7df829493d7bfc25fe97acfe1b`.
+- Machine: Linux x86-64, AMD EPYC 9V74 virtual CPU, three logical CPUs visible,
+  about 10 GB RAM; two compute threads and one inter-op thread.
+- Native CPU inference: Tilawi mixed-quantized ONNX; Mohammed float32 NeMo.
+  Both use full-clip audio. Neither uses a passage prompt or canonical matching.
+- All 120 audio files matched their frozen hashes; the 20 RetaSy files were
+  freshly prepared from the existing lock. No samples were replaced.
+- Temporary RetaSy audio and text manifests were deleted after independent
+  report validation.
+- 110 automated benchmark tests and 30 documentation tests passed. These check
+  the harness; the 240 real transcriptions were run locally, outside CI.
+
 ## Comparison rules
 
 - Use the same frozen 120 recordings from the [public dataset test](PUBLIC-DATASETS.md):
