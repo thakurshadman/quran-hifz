@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f4f3eb">
+    <meta name="referrer" content="no-referrer">
+    <title>Try Al-Ikhlas · Qur’an Hifz</title>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <main>
+      <header class="brand"><span class="brand-mark" aria-hidden="true">◈</span> Qur’an Hifz <span class="pill">Speech experiment</span></header>
+      <section class="intro" aria-labelledby="title">
+        <p class="eyebrow">A small first step</p>
+        <h1 id="title">Try Al-Ikhlas.</h1>
+        <p class="lede">Recite from memory. See what the AI hears.</p>
+        <p class="intro-note">Surah 112 · Up to 30 seconds · No score or mistake detection yet</p>
+      </section>
+      <section class="test-card" aria-labelledby="test-title">
+        <div class="card-heading"><h2 id="test-title">Your recitation test</h2><span id="state-badge" class="pill">Not loaded</span></div>
+        <p id="status" role="status" aria-live="polite" aria-atomic="true">Load the speech model to begin. Your microphone stays off until you press Start.</p>
+        <div class="meter-row"><span id="mic-label">Microphone off</span><span id="timer" aria-label="Recording time">0:00 / 0:30</span></div>
+        <meter id="level" min="0" max="1" value="0" aria-label="Microphone input level"></meter>
+        <div class="actions">
+          <button id="load" class="primary" type="button">Load speech test <span aria-hidden="true">↓</span></button>
+          <button id="start" class="primary" type="button" hidden>Start reciting <span aria-hidden="true">●</span></button>
+          <button id="stop" class="primary" type="button" hidden>Stop &amp; transcribe <span aria-hidden="true">■</span></button>
+          <button id="cancel" class="secondary" type="button" hidden>Cancel</button>
+          <button id="clear" class="secondary" type="button" hidden>Clear result</button>
+        </div>
+        <p class="device-note">About 55 MB to download the first time. Use a recent browser; slower phones may need a few minutes.</p>
+      </section>
+      <section id="result-panel" class="result-card" aria-labelledby="result-title" hidden>
+        <p class="eyebrow">What the model heard</p>
+        <h2 id="result-title">AI transcription</h2>
+        <p class="warning">May be wrong. Not verified Qur’an text.</p>
+        <p id="transcript" lang="ar" dir="rtl"></p>
+        <p id="timing" class="device-note"></p>
+        <p class="device-note">This is a rough speech test, not a judgement of your recitation or tajwīd.</p>
+      </section>
+      <aside class="privacy" aria-labelledby="privacy-title">
+        <span class="privacy-icon" aria-hidden="true">↳</span>
+        <div><h2 id="privacy-title">Your voice stays on this device.</h2>
+          <p>Loading downloads an AI model from Hugging Face, which receives the download request, including your IP address. Model files may be cached by your browser. Your audio is not uploaded.</p>
+          <p>Audio is held briefly in memory and cleared after processing or cancellation. Results stay on this page until you clear them, start again, leave the page or switch tabs. We do not save recordings or transcripts.</p>
+        </div>
+      </aside>
+      <footer>One passage. One experiment. Learn what works before building more.</footer>
+    </main>
+    <noscript><p>This speech test needs JavaScript enabled.</p></noscript>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
