@@ -2,51 +2,41 @@
 
 ## Reporting
 
-Do not put credentials, personal recordings, transcripts, or exploitable details
-in a public issue. If GitHub private vulnerability reporting is enabled, use the
-repository Security tab to report privately. Read-only inspection for the SEC-001
-draft reported private vulnerability reporting disabled (`enabled: false`).
-See the [owner setup and verification handoff](docs/security/SEC-001.md#private-reporting-and-incident-handoff).
-Until a private channel is verified, ask the owner through a non-sensitive issue to enable a
-private reporting channel; share only the request for a channel publicly.
-Do not assume a monitored security email or response SLA exists.
+This is initially a personal pilot for the owner and a few known people. Raise
+problems privately with the owner through existing communication. Do not put
+credentials, recordings, transcripts or exploitable details in public issues.
+GitHub private vulnerability reporting is optional for this pilot; no monitored
+security email or response SLA is claimed. Before public release, establish an
+appropriate private reporting route and support responsibilities.
 
-The project currently has no application releases. The human owner triages
-reports and must establish supported versions, response ownership, and a private
-reporting channel before a public application release (**SEC-001**).
-
-The [SEC-001 proposal](docs/security/SEC-001.md) supplies controls, threat and
-verification IDs, proposed retention/deletion deadlines, ownership decisions and
-a [draft participant notice](docs/security/RESEARCH-CONSENT-TEMPLATE.md).
-It remains pending human approval and does not authorize data collection.
+The [SEC-001 pilot policy](docs/security/SEC-001.md) and
+[short pilot note](docs/security/PILOT-NOTE.md) replace the earlier formal
+research protocol for owner-and-friends use. No runtime safeguards exist yet.
 
 ## Audio and user data
 
-- Request microphone access only after a deliberate user action. Clearly show
-  capture state and provide a stop control; release the microphone on stop/exit.
-- Disclose on-device versus transmitted processing before capture/transmission.
-  Never switch to remote processing without the required informed choice.
-- Default retention is no persistent audio or transcript storage. Document and
-  bound any transient processing buffers; purge them on completion/cancellation.
-- Remote candidates must document provider logging, retention, training use,
-  subprocessors, region, and deletion behavior. Unknown provider retention is
-  not evidence of zero retention and cannot satisfy the release gate.
-- Collect research recordings only with consent and rights for the stated use.
-  Keep them in approved restricted storage, outside this public repository.
-  Define retention, withdrawal, deletion, and any age-related safeguards before
-  recruiting participants. No production/user audio collection occurs in Phase 0.
-- No raw audio, transcripts, tokens, or identifying telemetry in normal logs.
-  Accounts and behavioral analytics are outside the initial prototype.
+- Start capture deliberately, show its state, and release it on stop/exit.
+- Explain local or named remote processing before use; no silent remote fallback.
+- Default to no persistent recordings/transcripts. Bound temporary buffers and
+  clear them on completion/cancellation.
+- Check remote provider retention/training behavior before transmission; unknown
+  retention is not zero retention. Keep API secrets server-side where applicable.
+- Save debugging samples only with explicit agreement on purpose, access and a
+  deletion date. Honor deletion requests across copies; keep samples restricted.
+- Keep audio, transcripts, tokens and identifying payloads out of logs/git.
+  Accounts and analytics remain outside the initial prototype.
+- Structured research or model training needs a separate decision and appropriate
+  consent, rights, access, retention and withdrawal arrangements before collection.
 
 ## Threat model and release gate
 
-Before introducing a data flow, identify assets, trust boundaries, threats,
-controls, and verification: microphone misuse, transport interception, malicious
-metadata, compromised dependencies/models, credential exposure, unauthorized
-storage, and Qur’an dataset tampering. Use TLS for remote transport and minimize
-access to all retained research data.
+Check the actual capture, storage/transmission and cancellation paths before use.
+Use encrypted remote transport, restrict access, validate untrusted input and
+review dependencies/models. Follow the practical checks in SEC-001; documentation
+checks alone do not establish runtime safety.
 
-Security/privacy violations block merge. Before release, verify consent UX,
-capture shutdown, storage/log behavior, third-party terms, deletion, dependency
-audit, and incident/rollback procedures. Qur’an integrity also requires the
-elevated content review defined in [ENGINEERING.md](ENGINEERING.md).
+Security/privacy defects still block merge. Qur’an integrity and uncertainty
+handling retain the elevated review defined in [ENGINEERING.md](ENGINEERING.md).
+Revisit privacy and reporting arrangements before unfamiliar users, a public
+release, persistent research datasets or training. Code review, CI and repository
+protections are unchanged.

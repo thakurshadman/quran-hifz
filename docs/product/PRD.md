@@ -6,6 +6,11 @@
 
 ## Problem and outcome
 
+The initial audience is the owner and a few people they know. This personal
+pilot uses the simple [SEC-001 policy](../security/SEC-001.md); formal study
+recruitment and consent paperwork are not prerequisites for ordinary pilot use.
+Representative research and public release remain separate later scopes.
+
 People memorizing Qur’an need an affordable, focused way to test continuation
 from random passages in material they know. The core interaction is: choose a
 scope → hear an authentic recorded prompt → continue aloud → receive immediate,
@@ -67,8 +72,10 @@ separate. Record reciter, convention, source, license, version, checksum, sūrah
 
 Prefer minimal audio exposure. Local inference is a candidate, not a decision.
 If a remote design is selected, disclose transmission and verify provider policy.
-Default persistent audio/transcript retention is none. Research datasets have a
-separate approved consent/access/retention plan. See [SECURITY.md](../../SECURITY.md).
+Default persistent audio/transcript retention is none. A saved pilot debugging
+sample needs explicit agreement on purpose, access and deletion date. Structured
+research datasets have a separate approved consent/access/retention plan.
+See [SECURITY.md](../../SECURITY.md).
 
 ## Non-goals and later scope
 
