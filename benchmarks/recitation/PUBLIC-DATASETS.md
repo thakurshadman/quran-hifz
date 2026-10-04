@@ -1,14 +1,15 @@
 # Public dataset tests
 
 The first test used one recording. This follow-up compares the same four models
-on **100 public clips: 50 from each of two datasets**. It is a small exploratory
+on **120 public clips: 50 OpenSLR clips, 50 error-dataset clips and 20 RetaSy clips**.
+It is a small exploratory
 comparison. It does not establish learner mistake detection or phone performance.
 
 ## Sources investigated
 
 | Dataset | Finding | Decision |
 | --- | --- | --- |
-| [RetaSy](https://huggingface.co/datasets/RetaSy/quranic_audio_dataset/tree/b1fcc39cbc045f367bb07e39025a0e3aaeabf34f) | 6,828 clips; authors report 1,287 participants and 1,166 labelled clips. Labels describe broad correctness, not actual spoken words. | Not run: no explicit audio/dataset license found in the card, paper, project website or its repository. |
+| [RetaSy](https://huggingface.co/datasets/RetaSy/quranic_audio_dataset/tree/b1fcc39cbc045f367bb07e39025a0e3aaeabf34f) | 6,828 clips; authors report 1,287 participants and 1,166 labelled clips. Labels describe broad correctness, not actual spoken words. | Selected 20 clips for temporary local analysis using the authors' offered research access. No formal dataset license found; rights remain unresolved for broader use. |
 | [OpenSLR 132](https://www.openslr.org/132/) through [deepdml](https://huggingface.co/datasets/deepdml/Quran_Speech_Dataset/tree/9e3ddb53c201369c997ae1f8e2e0232a0e275cd0) | Original publisher declares MIT. Mirror has 123,971 clips with audio, duration and expected text. | Selected 50 clips. The mirror does not provide speaker IDs or error labels. |
 | [Quran recitation errors](https://huggingface.co/datasets/sobolev210/quran-recitation-errors/tree/d196cd3132c69cd361d28cf6a8b442ae4e0bf0b4) | Publisher declares MIT. 1,042 clips; metadata contains 451 Hafs and 591 Qaloon clips. Annotation method and original collection details are undocumented. | Selected 50 Hafs clips for a descriptive comparison under the published terms. Error tags are unverified. |
 | [Qur’anic Universal Ayahs](https://huggingface.co/datasets/QUD-Technologies/quranic-universal-ayahs/tree/8ca67b4213b761cb364c17923548295ef2d58301) | Many reciters and word timings. Its card explicitly says the audio is not relicensed. | Deferred: check original recording rights. |
@@ -17,35 +18,55 @@ comparison. It does not establish learner mistake detection or phone performance
 RetaSy sources checked include its [paper](https://arxiv.org/html/2405.02675v1),
 [website](https://quranic-audio-dataset.github.io/) and
 [website source](https://github.com/Quranic-Audio-Dataset/Quranic-Audio-Dataset.github.io/tree/05b34904aa0dd18f3924be56b64c69169335fe49).
-The paper's own license does not license its audio. RetaSy remains a useful
-candidate once its dataset terms are clear. We have not contacted the authors.
+The paper's own license does not license its audio. The dataset card explicitly
+offers download instructions and describes AI research use. This user-requested
+local analysis relies on that offered access, not on an invented license grant.
+It does not train a model or redistribute the recordings, text or personal IDs.
+The RetaSy downloads and local text manifests are temporary and deleted after
+validation. Formal rights for training, redistribution or product use remain
+unresolved. We have not contacted the authors.
 
-The two selected sources are evaluated locally under their published MIT
+OpenSLR and the error dataset are evaluated locally under their published MIT
 declarations. This is not an audit of every original recording's ownership or
 participant consent. Audio, reference text and personal metadata are not
 redistributed here. Neither source has received our qualified content review.
 
 ## How the samples were chosen
 
-The list was fixed **before model inference**. [public-datasets.json](public-datasets.json)
+Each list was fixed **before inference on that sample**. [public-datasets.json](public-datasets.json)
 records source revisions, row numbers, reference/audio hashes, selection rules,
-exclusions and clip durations. Seed: `20261004`.
+exclusions and clip durations for the first 100 clips. The supplementary RetaSy
+list is in [retasy-samples.json](retasy-samples.json). Seed: `20261004`.
 
 - OpenSLR: shuffle candidate row indices across all 123,971 rows, then take the
   first 50 eligible clips. The source has no speaker field, so voice diversity
-  cannot be confirmed from this mirror.
+  cannot be confirmed from this mirror. It also lacks recitation-convention
+  metadata; legitimate differences between conventions may affect text scores.
 - Recitation errors: Hafs only. Shuffle clips with error tags and clips without
   tags separately. Select up to 20 tagged clips, then fill to 50 with untagged
   clips, with at most three clips per source recording. A recording is not
   necessarily a unique speaker. Empty tags do not prove correct recitation.
-- Both: recordings must be 1–30 seconds and have 1–500 normalized reference
-  words. Remove exact duplicate downloaded audio across both samples. Longer
+- RetaSy: select 10 clips labelled `correct` and 10 labelled `in_correct`, Hafs
+  only, with no repeated source speaker ID. Use a seeded subset of metadata
+  pages and seeded shuffling before selection. These are dataset labels, not
+  our independently verified judgments or word-by-word spoken transcripts.
+- All three: recordings must be 1–30 seconds and have 1–500 normalized reference
+  words. Remove exact duplicate downloaded audio across the samples. Longer
   clips are excluded, not cut. This biases the comparison toward short clips.
+
+The selected error-dataset clips cover 29 source recordings: 20 clips have tags
+and 30 do not. Of the 20 tagged clips, 15 have `Letters`, five `Tajweed`, two
+`Wording`, and one `Tashkeel` tags; categories overlap. Only two clips carry a
+wording tag, so this sample cannot establish reliable word-mistake detection.
 
 We did not tune or train models using these clips. Upstream training overlap is
 unknown, and exact-byte checks cannot detect the same recording in another
 encoding. These are not confirmed unseen test sets. They also do not establish
 coverage of the proposed Juz 29 learner benchmark in #4/#7.
+
+In particular, [Qur’an Turbo's pinned model card](https://huggingface.co/naazimsnh02/whisper-large-v3-turbo-ar-quran/blob/670f826cf3731ae9f6b3f54d4a417d8f600e2cd2/README.md)
+names EveryAyah as its training dataset. Shared professional recordings are a
+real overlap concern; we have not matched this sample against its training files.
 
 ## Repeat the test
 
@@ -63,7 +84,21 @@ are needed. Keep data and reports outside every Git checkout.
   --cache /tmp/quran-models \
   --models tilawi tiny tarteel quran-turbo \
   --output /tmp/quran-public-results.json
+
+/tmp/quran-benchmark-venv/bin/python benchmarks/recitation/prepare_retasy.py \
+  --destination /tmp/quran-retasy-samples
+
+/tmp/quran-benchmark-venv/bin/python benchmarks/recitation/batch.py \
+  --manifest /tmp/quran-retasy-samples/retasy.json \
+  --cache /tmp/quran-models \
+  --models tilawi tiny tarteel quran-turbo \
+  --output /tmp/quran-retasy-results.json
 ```
+
+The published evidence uses two separate runs: the first two datasets together,
+then RetaSy separately. Keep that order and process separation when comparing
+timings. After validating the RetaSy result, delete its temporary sample directory
+to remove the downloaded audio and text manifests.
 
 Use a new destination and output name for each run. Preparing downloads only
 the selected audio and small metadata files, not the full datasets. OpenSLR

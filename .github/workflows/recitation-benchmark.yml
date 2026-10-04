@@ -37,7 +37,9 @@ jobs:
           python benchmarks/recitation/benchmark.py --help
           python benchmarks/recitation/batch.py --help
           python benchmarks/recitation/prepare_datasets.py --help
+          python benchmarks/recitation/prepare_retasy.py --help
           python -m py_compile benchmarks/recitation/benchmark.py benchmarks/recitation/scoring.py benchmarks/recitation/whisper_runner.py
           python -m py_compile benchmarks/recitation/batch.py benchmarks/recitation/prepare_datasets.py benchmarks/recitation/batch_whisper_runner.py
+          python -m py_compile benchmarks/recitation/prepare_retasy.py
           node --check benchmarks/recitation/node_runner.mjs
           node --check benchmarks/recitation/batch_node_runner.mjs
