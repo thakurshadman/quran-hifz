@@ -45,7 +45,11 @@ a temporary directory and seeds missing documents/sections, broken link forms,
 missing anchors, duplicate/missing IDs, missing evidence, and dependency defects.
 It also runs the CLI with a seeded broken link and asserts a nonzero exit, and
 commits a trailing-whitespace defect in a temporary repository to prove CI's Git
-whitespace command rejects it. Positive
+whitespace command rejects it. The suite also parses all workflow YAML with
+PyYAML's non-executing BaseLoader and rejects a seeded unquoted-colon command.
+This catches YAML syntax errors locally; it does not validate GitHub Actions'
+schema, expression semantics, action availability, or runner behavior. Live
+GitHub CI remains a required gate. Positive
 cases cover valid references, anchors, encoded paths, and ignored code examples.
 
 These checks prove structural consistency, not correctness of prose, sufficiency
@@ -86,6 +90,13 @@ framework, hosting provider, model, service, or paid dependency is introduced.
   release requires periodic advisory/compatibility review; age alone is not proof
   of security. Neither library ships in a product runtime. Only their default
   dependencies are installed, using wheel-only installation with SHA-256 hashes.
+- **PyYAML 6.0.3:** MIT, maintained by the YAML/PyYAML project; PyPI records
+  the release on 2025-09-25. Added after GitHub rejected an unquoted colon in
+  a workflow command that the Markdown tests could not detect. BaseLoader parses
+  syntax without constructing Python objects; a hand-written YAML check would
+  repeat the parser fragility this gate avoids. No additional runtime dependencies
+  are required. Wheel-only hashed installation avoids source builds. Review
+  advisories and wheel/runtime compatibility when updating it.
 - **actions/checkout v7.0.1** and **actions/setup-python v7.0.0:** MIT, maintained
   by GitHub, use Node 24. Release tags were resolved through GitHub's API to the
   full commit SHAs recorded in the workflow, not copied from an assumed version.
@@ -99,7 +110,7 @@ licensing again before redistributing tools with a product. No recurring service
 is purchased; CI remains subject to the repository owner's GitHub Actions plan.
 
 [requirements.in](../../tools/requirements.in) records the direct requirement;
-[requirements.txt](../../tools/requirements.txt) pins both resolved dependencies
+[requirements.txt](../../tools/requirements.txt) pins all three resolved dependencies
 and artifact hashes. To regenerate intentionally, use **uv 0.12.19**:
 
 ```sh

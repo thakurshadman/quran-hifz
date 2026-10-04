@@ -1,2 +1,4 @@
 # Documentation checks only; not the application stack.
 markdown-it-py==4.2.0
+# Parse workflow YAML locally without constructing executable objects.
+PyYAML==6.0.3

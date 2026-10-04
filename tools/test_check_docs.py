@@ -7,6 +7,8 @@ import sys
 import tempfile
 import unittest
 
+import yaml
+
 from check_docs import BACKLOG, NFR, PRD, TESTS, check_repository
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -38,6 +40,28 @@ class DocumentationRegressions(unittest.TestCase):
     def assert_failure(self, message):
         errors = check_repository(self.root, self.paths)
         self.assertTrue(any(message in error for error in errors), errors)
+
+    def test_workflow_yaml_parses(self):
+        # BaseLoader treats scalars as strings (including GitHub's "on" key)
+        # and never constructs executable Python objects from YAML tags.
+        workflows = list((self.root / ".github/workflows").glob("*.yml"))
+        workflows += list((self.root / ".github/workflows").glob("*.yaml"))
+        self.assertTrue(workflows, "No workflow found to validate")
+        for workflow in workflows:
+            with self.subTest(workflow=workflow.name):
+                document = yaml.load(workflow.read_text(), Loader=yaml.BaseLoader)
+                self.assertIsInstance(document, dict)
+                self.assertIn("on", document)
+                self.assertIn("jobs", document)
+
+    def test_workflow_yaml_rejects_unquoted_colon_command(self):
+        workflow = self.root / ".github/workflows/documentation.yml"
+        text = workflow.read_text()
+        valid = "run: |\n          python -m pip install --require-hashes --only-binary=:all: -r tools/requirements.txt"
+        invalid = "run: python -m pip install --require-hashes --only-binary=:all: -r tools/requirements.txt"
+        self.assertIn(valid, text, "Regression seed must match the workflow")
+        with self.assertRaises(yaml.YAMLError):
+            yaml.load(text.replace(valid, invalid, 1), Loader=yaml.BaseLoader)
 
     def test_repository_passes(self):
         self.assertEqual(check_repository(self.root, self.paths), [])
