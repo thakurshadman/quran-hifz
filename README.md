@@ -21,6 +21,7 @@ Juz 29 is the initial scope. Tajwīd assessment is outside the MVP.
 | [Contributing](CONTRIBUTING.md) | Tickets, branches, reviews, and bounded merge authorization |
 | [Engineering standards](ENGINEERING.md) | Integrity, dependencies, testing, and operations |
 | [Security](SECURITY.md) | Reporting and audio/privacy rules |
+| [SEC-001 proposal](docs/security/SEC-001.md) | Proposed privacy controls, threat model, consent and pending human decisions |
 | [Architecture decisions](docs/architecture/adr/README.md) | Decision process and template |
 | [ASR feasibility plan](docs/research/ASR-FEASIBILITY-PLAN.md) | Experiments and initial backlog |
 | [Test strategy](docs/testing/TEST-STRATEGY.md) | Acceptance mapping and validation stages |
