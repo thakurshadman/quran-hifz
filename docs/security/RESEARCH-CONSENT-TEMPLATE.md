@@ -26,21 +26,34 @@ publish raw recordings or transcripts, or for unrelated purposes. Publication is
 limited to reviewed non-identifying aggregate results. Risks include unauthorized
 access and mistaken feedback; [actual controls] reduce but cannot eliminate them.
 
-Research recordings and linked derived data are deleted by the earlier of
-90 days after collection or 30 days after experiment closure: [concrete expiry
-rule/date and closure date if known]. Temporary copies clear after processing;
-crash leftovers expire within 24 hours. Sanitized logs expire within 30 days.
-Minimal consent/deletion evidence expires within 90 days after final deletion.
-[Describe actual backup/provider behavior and expiry, within approved limits.]
+All active research recordings and linked derived data, including copies held by
+providers/subprocessors, annotators and exports, have deletion completed and
+verified by the earlier of 90 days after collection or 30 days after experiment
+closure: [concrete expiry rule/date and closure date if known]. There is no extra
+active-copy grace period. Temporary copies clear after processing; crash leftovers
+expire within 24 hours. Sanitized logs expire within 30 days. Only isolated backup
+copies unusable for processing may remain for up to 30 calendar days after that
+scheduled expiry, with access/reuse blocked at expiry.
+[Describe actual backup/provider behavior within these approved limits.]
 
 To withdraw, contact [approved private route] with your withdrawal code. We
-acknowledge within 3 calendar days, block further use when received, and delete
-active copies within 7 calendar days. Backups/provider copies must be deleted
-within 30 days of active deletion; we confirm what is complete and what remains
-pending. Withdrawal removes your data from future benchmarks, including frozen
+acknowledge within 3 calendar days and block further use when received. We complete
+and verify deletion of all active copies, including provider/subprocessor,
+annotator and export copies, within 7 calendar days of receipt or by scheduled
+expiry, whichever is earlier. Isolated backups have deletion completed and
+verified within 30 calendar days of receipt or scheduled expiry, whichever is
+earlier. Failed or delayed deletion never extends these deadlines; we report what
+is complete, pending or overdue. Withdrawal removes your data from future benchmarks, including frozen
 sets. Already published non-identifying aggregate results may remain. If you lose
 the code, contact us through your existing contact method; we will help without
 asking for identity documents or additional voice samples.
+
+Our final research-data deletion receipt confirms removal of source/derived
+research copies, backups and participant-linked restore-suppression records. We
+then delete your contact mapping. Minimal consent/deletion evidence, without
+voice, transcripts, derived research data or direct contact identifiers, remains
+for at most 90 days after that completion. The receipt states its separate purge
+date; it does not imply those minimal records have already been erased.
 
 ## Affirmative consent record
 
