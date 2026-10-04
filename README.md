@@ -3,9 +3,10 @@
 A focused memorization-testing project: hear an authentic recorded prompt,
 continue reciting, and receive honest word-level feedback.
 
-**Status: Phase 0 — governance and research planning.** There is no application,
-speech model, or selected technology stack yet. The product specification is a
-draft for human review, and benchmark targets are proposals, not measured results.
+**Status: early speech experiments.** A small Al-Ikhlas transcription prototype
+and a reproducible model-comparison harness exist. The full memorization app and
+its production stack are not selected. Product targets remain proposals; one
+recording is not evidence that the full benchmark targets have been met.
 
 The first milestone, **M0 — Technical Feasibility**, asks whether real-time Qur’an
 recitation tracking can meet acceptable accuracy, latency, privacy, and cost.
@@ -24,6 +25,8 @@ Juz 29 is the initial scope. Tajwīd assessment is outside the MVP.
 | [SEC-001 pilot policy](docs/security/SEC-001.md) | Practical privacy safeguards for the owner and a few known people |
 | [Architecture decisions](docs/architecture/adr/README.md) | Decision process and template |
 | [ASR feasibility plan](docs/research/ASR-FEASIBILITY-PLAN.md) | Experiments and initial backlog |
+| [Reproduce the model comparison](benchmarks/recitation/README.md) | Setup, pinned models, scoring, timing, privacy and tests |
+| [Exploratory comparison results](benchmarks/recitation/RESULTS.md) | Four models on one private Al-Ikhlas clip, with limitations |
 | [Test strategy](docs/testing/TEST-STRATEGY.md) | Acceptance mapping and validation stages |
 
 ## Working on this project
