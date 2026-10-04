@@ -4,14 +4,21 @@
 
 Do not put credentials, personal recordings, transcripts, or exploitable details
 in a public issue. If GitHub private vulnerability reporting is enabled, use the
-repository Security tab to report privately. Its availability has not been
-verified. If unavailable, ask the owner through a non-sensitive issue to enable a
+repository Security tab to report privately. Read-only inspection for the SEC-001
+draft reported private vulnerability reporting disabled (`enabled: false`).
+See the [owner setup and verification handoff](docs/security/SEC-001.md#private-reporting-and-incident-handoff).
+Until a private channel is verified, ask the owner through a non-sensitive issue to enable a
 private reporting channel; share only the request for a channel publicly.
 Do not assume a monitored security email or response SLA exists.
 
 The project currently has no application releases. The human owner triages
 reports and must establish supported versions, response ownership, and a private
 reporting channel before a public application release (**SEC-001**).
+
+The [SEC-001 proposal](docs/security/SEC-001.md) supplies controls, threat and
+verification IDs, proposed retention/deletion deadlines, ownership decisions and
+a [draft participant notice](docs/security/RESEARCH-CONSENT-TEMPLATE.md).
+It remains pending human approval and does not authorize data collection.
 
 ## Audio and user data
 

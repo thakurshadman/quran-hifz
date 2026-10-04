@@ -29,6 +29,12 @@ text and separate comparison representations in all fixtures.
 
 ## Test layers
 
+[SEC-001](../security/SEC-001.md#proposed-controls-and-verification) maps proposed
+security/privacy controls to SEC-V01–SEC-V09 evidence and existing requirements.
+Those lifecycle, deletion, provider and incident checks are planned; document
+validation is not evidence that the controls are implemented. Synthetic records
+must be used for rehearsals until collection is separately approved.
+
 - **Unit:** normalization, identifiers, boundaries, prompt selection, and state
   transitions. No test should require network access for deterministic logic.
 - **Property:** no panic on valid/bounded malformed input; stable IDs/display
