@@ -10,6 +10,14 @@ ASR means automatic speech recognition; it is not tajwīd assessment.
 
 ## Experiment design
 
+The first audience is the owner and a few known people. Feasibility planning and
+small pilot checks can proceed with [SEC-001's practical safeguards](../security/SEC-001.md)
+and no formal recruitment process. Save debugging samples only by explicit
+case-by-case agreement on purpose, access and deletion. Such pilot results show
+what works for those users, not representative accuracy. The structured benchmark
+below remains a later, separately approved research activity; numerical targets
+and evidence needed to claim M0 success are unchanged.
+
 1. Approve scope, recitation convention, licensing, consent/storage, speaker
    recruitment, reference devices, metrics, cost ceiling, and false-error limits.
 2. Build a consented/licensed corpus with ground-truth word events, error labels,
@@ -70,7 +78,7 @@ not approval of unresolved numerical targets, providers, data collection, or spe
 | --- | --- | --- |
 | PROD-001 | Phase 0 governance: all agreed documents present, requirements traceable, open decisions explicit, independent review/QA evidence and human PR review | None |
 | QA-001 | CI/bootstrap gates: select/pin documentation tools, validate links and document structure on PRs; demonstrate a seeded failure is caught; propose repository required checks/approvals with human configuration evidence | PROD-001 |
-| SEC-001 | Privacy/threat model and reporting: approve consent/access/retention/withdrawal controls, designate security and content reviewers, establish private vulnerability reporting before release | PROD-001 |
+| SEC-001 | Personal-pilot privacy: document deliberate capture, local/remote disclosure, no default recording retention, agreed debugging-sample deletion, practical risk checks and owner contact; revisit formal research/reporting before expanded use | PROD-001 |
 | ASR-001 | Benchmark dataset specification: sources/rights, convention, labelled cases, cohort/sample-size plan, independent annotation/adjudication, speaker/source-disjoint holdout manifest; no collection before consent approval | PROD-001, SEC-001 |
 | ASR-002 | Accuracy protocol: define all event denominators/matching rules, WER, recall, precision, false accusations/acceptances, uncertain coverage and confidence intervals; ratify A03 limits before evaluation | ASR-001 |
 | ASR-003 | Latency/resource protocol: instrumentation from acoustic event to UI, stage breakdown, warm/cold paths, reference device/network matrix, soak/resource budgets and reproducible harness | PROD-001 |
@@ -83,8 +91,9 @@ not approval of unresolved numerical targets, providers, data collection, or spe
 | ASR-010 | Recommendation/ADR: consolidate accuracy, error, latency, compatibility, integrity, cost and privacy evidence; state go/conditional/no-go and obtain human decision | ASR-005, ASR-006, ASR-007, ASR-008, ASR-009 |
 | ARCH-001 | Architecture bake-offs: after M0, compare frontend options on the same slice and measure whether Rust/WASM adds value; propose boundaries/ADRs without assuming a framework | ASR-010 human go decision |
 
-QA-001's executable checks and the relevant research/consent specifications must
-be ready before dependent experiment code is merged or recordings collected.
+QA-001's executable checks and applicable pilot safeguards must be ready for
+dependent code. Formal research/consent specifications apply before structured
+research collection, not as a blanket prerequisite for owner-and-friends use.
 No feature tickets are implementation-ready until requirements and architecture
 are accepted. Technical spikes use isolated research branches and are not quietly
 promoted into production.

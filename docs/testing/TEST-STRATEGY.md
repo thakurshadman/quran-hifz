@@ -23,17 +23,17 @@ text and separate comparison representations in all fixtures.
 | FR-006, FR-008 | UI/E2E tentative-versus-final feedback, provider failure without grading, result/next-question reset, correction/replay races |
 | FR-010, NFR-I01/I02 | Provenance/license/checksum review, import validation, immutable-display tests, ID/timing boundary fixtures and qualified content review |
 | NFR-L01/L02/L03, NFR-R02 | Instrumented stage and end-to-end p50/p95/p99 benchmarks, warm/cold paths, resource/soak tests on declared devices/networks |
-| NFR-P02, NFR-S01 | Consent/retention/withdrawal review, threat-model checks, malicious input tests, secret/dependency checks appropriate to selected stack |
+| NFR-P02, NFR-S01 | Verify any saved pilot sample's agreement/deletion; structured research consent/retention/withdrawal review when applicable; threat-model checks, malicious input tests and secret/dependency checks |
 | NFR-U01, NFR-C01/C02 | Manual and automated accessibility, Arabic RTL, keyboard/screen reader, browser/device matrix and offline/failure-mode tests |
 | NFR-C03 | Reproducible measured cost/session model, scenario assumptions and sensitivity against the approved ceiling |
 
 ## Test layers
 
-[SEC-001](../security/SEC-001.md#proposed-controls-and-verification) maps proposed
-security/privacy controls to SEC-V01–SEC-V09 evidence and existing requirements.
-Those lifecycle, deletion, provider and incident checks are planned; document
-validation is not evidence that the controls are implemented. Synthetic records
-must be used for rehearsals until collection is separately approved.
+[SEC-001](../security/SEC-001.md#small-risk-and-verification-checklist) maps the
+personal pilot's practical checks to existing requirements. Capture, provider,
+storage and any agreed sample-deletion checks belong to the relevant feature;
+document validation does not prove they work. Structured research requires its
+own approved data protocol before collection.
 
 - **Unit:** normalization, identifiers, boundaries, prompt selection, and state
   transitions. No test should require network access for deterministic logic.
