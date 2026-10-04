@@ -6,6 +6,8 @@ import hashlib
 import json
 from pathlib import Path
 import re
+import time
+import urllib.error
 import urllib.parse
 import urllib.request
 
@@ -24,11 +26,20 @@ def text_hash(value):
 
 
 def fetch(url, limit=10_000_000):
-    with urllib.request.urlopen(url, timeout=60) as response:
-        payload = response.read(limit + 1)
-        if len(payload) > limit:
-            raise ValueError("Public asset exceeds size limit")
-        return payload, response.headers
+    for attempt in range(4):
+        try:
+            with urllib.request.urlopen(url, timeout=60) as response:
+                payload = response.read(limit + 1)
+                if len(payload) > limit:
+                    raise ValueError("Public asset exceeds size limit")
+                return payload, response.headers
+        except urllib.error.HTTPError as error:
+            if error.code not in (429, 500, 502, 503, 504) or attempt == 3:
+                raise
+        except (urllib.error.URLError, TimeoutError):
+            if attempt == 3:
+                raise
+        time.sleep(2 ** attempt)
 
 
 def error_metadata():

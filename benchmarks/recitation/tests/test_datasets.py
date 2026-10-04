@@ -20,12 +20,53 @@ class Response(io.BytesIO):
 
 
 class PublicSourceTests(unittest.TestCase):
+    def transient_errors(self):
+        return [datasets.urllib.error.HTTPError("https://example.invalid", code, "synthetic", {}, None)
+                for code in (429, 500, 502, 503, 504)] + [
+                    datasets.urllib.error.URLError("synthetic connection failure"),
+                    TimeoutError("synthetic timeout")]
+
+    def test_transient_download_failure_retries_same_url_and_recovers(self):
+        url = "https://example.invalid/frozen-source"
+        for error in self.transient_errors():
+            with self.subTest(error=str(error)), \
+                    mock.patch.object(datasets.urllib.request, "urlopen",
+                                      side_effect=[error, Response(b"valid")]) as request, \
+                    mock.patch.object(datasets.time, "sleep") as sleep:
+                self.assertEqual(datasets.fetch(url)[0], b"valid")
+                self.assertEqual(request.call_args_list, [mock.call(url, timeout=60)] * 2)
+                sleep.assert_called_once_with(1)
+
+    def test_persistent_transient_failure_has_four_attempts_and_bounded_backoff(self):
+        for error in self.transient_errors():
+            with self.subTest(error=str(error)), \
+                    mock.patch.object(datasets.urllib.request, "urlopen", side_effect=error) as request, \
+                    mock.patch.object(datasets.time, "sleep") as sleep, \
+                    self.assertRaises(type(error)):
+                datasets.fetch("https://example.invalid")
+            self.assertEqual(request.call_count, 4)
+            self.assertEqual(sleep.call_args_list, [mock.call(1), mock.call(2), mock.call(4)])
+
+    def test_permanent_http_error_is_not_retried(self):
+        for code in (400, 401, 403, 404):
+            error = datasets.urllib.error.HTTPError("https://example.invalid", code, "synthetic", {}, None)
+            with self.subTest(code=code), \
+                    mock.patch.object(datasets.urllib.request, "urlopen", side_effect=error) as request, \
+                    mock.patch.object(datasets.time, "sleep") as sleep, \
+                    self.assertRaises(datasets.urllib.error.HTTPError):
+                datasets.fetch("https://example.invalid")
+            self.assertEqual(request.call_count, 1)
+            sleep.assert_not_called()
+
     def test_download_is_bounded(self):
         with mock.patch.object(datasets.urllib.request, "urlopen", return_value=Response(b"1234")):
             self.assertEqual(datasets.fetch("https://example.invalid", limit=4)[0], b"1234")
-        with mock.patch.object(datasets.urllib.request, "urlopen", return_value=Response(b"12345")), \
+        with mock.patch.object(datasets.urllib.request, "urlopen", return_value=Response(b"12345")) as request, \
+                mock.patch.object(datasets.time, "sleep") as sleep, \
                 self.assertRaises(ValueError):
             datasets.fetch("https://example.invalid", limit=4)
+        self.assertEqual(request.call_count, 1)
+        sleep.assert_not_called()
 
     def viewer_result(self, index=7):
         source = datasets.SOURCES["openslr132"]
@@ -125,6 +166,30 @@ class PreparationTests(unittest.TestCase):
                 self.prepare(**{changed: b"changed bytes" if changed == "audio" else "CHANGED_REFERENCE"})
             self.assertEqual(list(self.destination.glob("*.json")), [])
             self.assertEqual(list(self.destination.glob("*.audio")), [])
+
+    def test_audio_integrity_failure_is_not_retried(self):
+        with mock.patch.object(datasets, "error_metadata", return_value=[]), \
+                mock.patch.object(datasets, "source_row", return_value=(
+                    {"text": self.reference}, "https://example.invalid/audio")), \
+                mock.patch.object(datasets.urllib.request, "urlopen", return_value=Response(b"changed audio")) as request, \
+                mock.patch.object(datasets.time, "sleep") as sleep, \
+                self.assertRaises(ValueError):
+            datasets.prepare(self.lock, self.destination)
+        self.assertEqual(request.call_count, 1)
+        sleep.assert_not_called()
+        self.assertEqual(list(self.destination.iterdir()), [])
+
+    def test_reference_integrity_failure_never_downloads_audio_or_retries(self):
+        with mock.patch.object(datasets, "error_metadata", return_value=[]), \
+                mock.patch.object(datasets, "source_row", return_value=(
+                    {"text": "changed reference"}, "https://example.invalid/audio")), \
+                mock.patch.object(datasets.urllib.request, "urlopen") as request, \
+                mock.patch.object(datasets.time, "sleep") as sleep, \
+                self.assertRaises(ValueError):
+            datasets.prepare(self.lock, self.destination)
+        request.assert_not_called()
+        sleep.assert_not_called()
+        self.assertEqual(list(self.destination.iterdir()), [])
 
     def test_floating_or_changed_source_lock_rejected_before_download(self):
         self.lock["sources"]["openslr132"]["revision"] = "main"
