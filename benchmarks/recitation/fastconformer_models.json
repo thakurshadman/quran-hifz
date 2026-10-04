@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "models": {
+    "mohammed": {
+      "repo": "mohammed/fastconformer-quran-ar",
+      "revision": "60973918b40c5fcdc0e93310c13a4a4661525142",
+      "format": "NeMo hybrid RNNT/CTC checkpoint; native CPU RNNT greedy evaluation",
+      "files": [
+        {
+          "path": "phase3_full/phase3_full_wer0.0014.nemo",
+          "bytes": 459243520,
+          "sha256": "dc3557eea22b25ab5c7af2d8cf01636efd415c4ed417418156e5895056c705d5"
+        }
+      ]
+    }
+  }
+}
