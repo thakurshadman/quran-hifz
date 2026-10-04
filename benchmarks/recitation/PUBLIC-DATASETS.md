@@ -29,7 +29,7 @@ unresolved. We have not contacted the authors.
 OpenSLR and the error dataset are evaluated locally under their published MIT
 declarations. This is not an audit of every original recording's ownership or
 participant consent. Audio, reference text and personal metadata are not
-redistributed here. Neither source has received our qualified content review.
+redistributed here. None of these sources has received our qualified content review.
 
 ## How the samples were chosen
 
@@ -110,6 +110,7 @@ availability is promised.
 
 An interrupted preparation can leave downloaded files in its destination.
 Delete that directory or choose a new one before retrying.
+For RetaSy, also delete the partial temporary directory after failed preparation.
 
 Inference is offline after preparation. Each clip is decoded once to mono,
 16 kHz float32 audio; all models receive that same decoded clip. Models load
