@@ -41,11 +41,13 @@ jobs:
           python benchmarks/recitation/fastconformer.py --help
           python benchmarks/recitation/qwen.py --help
           python benchmarks/recitation/repetition.py --help
+          python benchmarks/recitation/muaalem.py --help
           python -m py_compile benchmarks/recitation/benchmark.py benchmarks/recitation/scoring.py benchmarks/recitation/whisper_runner.py
           python -m py_compile benchmarks/recitation/batch.py benchmarks/recitation/prepare_datasets.py benchmarks/recitation/batch_whisper_runner.py
           python -m py_compile benchmarks/recitation/prepare_retasy.py
           python -m py_compile benchmarks/recitation/fastconformer.py benchmarks/recitation/fastconformer_worker.py
           python -m py_compile benchmarks/recitation/qwen.py benchmarks/recitation/qwen_worker.py
           python -m py_compile benchmarks/recitation/repetition.py
+          python -m py_compile benchmarks/recitation/muaalem.py
           node --check benchmarks/recitation/node_runner.mjs
           node --check benchmarks/recitation/batch_node_runner.mjs
