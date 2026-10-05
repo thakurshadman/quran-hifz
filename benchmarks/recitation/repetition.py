@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Test Tilawi's response to exact audio repetition without inventing spoken truth."""
+"""Test a pinned recognizer's response to exact repetition without inventing spoken truth."""
 
 import argparse
 from datetime import datetime, timezone
@@ -15,6 +15,7 @@ import tempfile
 from batch import load_datasets, save_report, score_trial, summarize
 from benchmark import (HERE, asset_path, decode_audio, environment_info,
                        outside_checkout, sha256_file, validate_manifest, verify_asset)
+from fastconformer import load_pin
 from scoring import NORMALIZATION_VERSION, normalize
 
 GAP_FRAMES = 4000
@@ -23,6 +24,9 @@ CATEGORIES = ("exact_two_copy_hypothesis", "exact_single_copy",
               "other_different", "unscorable_blank_baseline")
 DECODING = "greedy CTC; blank 1024; no reference prompt or matcher"
 TIMER_SCOPE = "ONNX session.run only; excludes CTC collapse and text decoding"
+MOHAMMED_DECODING = "RNNT greedy_batch; max_symbols 10; no passage prompt or matcher"
+MOHAMMED_TIMER_SCOPE = "NeMo transcribe call; includes features, encoder, RNNT decoding and text conversion"
+MOHAMMED_LOAD_TIMER_SCOPE = "Archive extraction, configuration checks, model restoration and decoder setup; excludes imports and hash verification"
 
 
 def digest(payload):
@@ -98,30 +102,63 @@ def classify_pair(single_text, repeated_text):
     return {"category": category, "baseline_words": len(single), "repeated_words": len(repeated)}
 
 
-def worker_metadata(private):
+def worker_metadata(private, model="tilawi"):
     """Allow only known metadata fields, never echo worker messages or hypotheses."""
     seconds = private["load_seconds"]
     if type(seconds) not in (float, int) or not math.isfinite(seconds) or seconds < 0:
         raise ValueError("Invalid model-load timing")
-    if private["decoding"] != DECODING or private["timer_scope"] != TIMER_SCOPE:
+    if model not in ("tilawi", "mohammed"):
+        raise ValueError("Unknown repetition adapter")
+    decoding = DECODING if model == "tilawi" else MOHAMMED_DECODING
+    timer_scope = TIMER_SCOPE if model == "tilawi" else MOHAMMED_TIMER_SCOPE
+    if private["decoding"] != decoding or private["timer_scope"] != timer_scope:
         raise ValueError("Unexpected worker decoding or timing protocol")
     runtime = private["runtime"]
-    keys = ("node", "onnxruntime_node", "transformers_js")
+    keys = (("node", "onnxruntime_node", "transformers_js") if model == "tilawi" else
+            ("python", "numpy", "torch", "torchaudio", "nemo_toolkit"))
     if set(runtime) != set(keys) or any(
             not isinstance(runtime[key], str)
             or not re.fullmatch(r"v?\d+(?:\.\d+){1,3}(?:[-+][A-Za-z0-9.-]+)?", runtime[key])
             for key in keys):
         raise ValueError("Invalid runtime versions")
-    return {"load_seconds": seconds, "decoding": DECODING, "timer_scope": TIMER_SCOPE,
-            "runtime": {key: runtime[key] for key in keys}}
+    result = {"load_seconds": seconds, "decoding": decoding, "timer_scope": timer_scope,
+              "runtime": {key: runtime[key] for key in keys}}
+    if model == "mohammed":
+        if private["load_timer_scope"] != MOHAMMED_LOAD_TIMER_SCOPE:
+            raise ValueError("Unexpected model-load timing protocol")
+        configuration = private["configuration"]
+        expected = {"decoder": "rnnt", "strategy": "greedy_batch", "max_symbols": 10,
+                    "batch_size": 1, "num_workers": 0, "weights_only": True, "device": "cpu",
+                    "seeds": {"torch": 0, "numpy": 0, "python": 0}, "cuda_graphs": False,
+                    "parameter_dtype": "torch.float32", "deterministic_algorithms": False,
+                    "checkpoint_nemo_version": "2.0.0rc1", "attention_context": [-1, -1]}
+        # Fixed configuration fields only; never expose arbitrary checkpoint metadata.
+        for key, value in expected.items():
+            if json.dumps(configuration[key], sort_keys=True) != json.dumps(value, sort_keys=True):
+                raise ValueError("Unexpected pinned RNNT configuration")
+        checkpoint_hash = configuration["checkpoint_config_sha256"]
+        if not isinstance(checkpoint_hash, str) or not re.fullmatch(r"[0-9a-f]{64}", checkpoint_hash):
+            raise ValueError("Invalid checkpoint configuration checksum")
+        if not isinstance(configuration["decoding_config"], dict):
+            raise ValueError("Invalid decoder configuration")
+        result["configuration"] = {
+            **expected, "checkpoint_config_sha256": checkpoint_hash,
+            "decoding_config_sha256": digest(json.dumps(configuration["decoding_config"],
+                                                        sort_keys=True, allow_nan=False).encode("utf-8"))}
+        result["load_timer_scope"] = MOHAMMED_LOAD_TIMER_SCOPE
+    return result
 
 
 def run_repetition(args, models, selection, public_lock):
+    model = getattr(args, "model", "tilawi")
+    if model not in ("tilawi", "mohammed"):
+        raise ValueError("Unknown repetition adapter")
     cache = outside_checkout(args.cache)
     dataset, samples = validate_inputs(args.manifest, selection, public_lock)
-    for asset in models["models"]["tilawi"]["files"]:
-        if not verify_asset(asset_path(cache, "tilawi", asset), asset):
-            raise ValueError("Missing or changed Tilawi assets")
+    for asset in models["models"][model]["files"]:
+        if not verify_asset(asset_path(cache, model, asset), asset):
+            raise ValueError("Missing or changed model assets")
+    model_manifest = "models.json" if model == "tilawi" else "fastconformer_models.json"
     # Capture the frozen protocol and code hashes before any model inference.
     report = {
         "schema_version": 1, "created_utc": datetime.now(timezone.utc).isoformat(),
@@ -130,7 +167,8 @@ def run_repetition(args, models, selection, public_lock):
         "environment": environment_info(), "normalization": NORMALIZATION_VERSION,
         "public_datasets_sha256": sha256_file(HERE / "public-datasets.json"),
         "repetition_samples_sha256": sha256_file(HERE / "repetition-samples.json"),
-        "model_manifest_sha256": sha256_file(HERE / "models.json"),
+        "model_manifest_file": model_manifest,
+        "model_manifest_sha256": sha256_file(HERE / model_manifest),
         "npm_lock_sha256": sha256_file(HERE.parents[1] / "experiments/ikhlas-test/package-lock.json"),
         "implementation_sha256": {name: sha256_file(HERE / name) for name in
                                   ("repetition.py", "batch.py", "batch_node_runner.mjs", "benchmark.py", "scoring.py")},
@@ -148,8 +186,12 @@ def run_repetition(args, models, selection, public_lock):
                         "No word omissions, substitutions, tajwid or streaming accuracy measured",
                         "Ten exploratory pairs; model training overlap and speaker diversity unknown",
                         "Native CPU full-clip inference, not browser or live feedback latency"],
-        "model": {"provenance": models["models"]["tilawi"]}, "pairs": [],
+        "model": {"key": model, "provenance": models["models"][model]}, "pairs": [],
     }
+    if model == "mohammed":
+        report["runtime_lock_sha256"] = sha256_file(HERE / "fastconformer-requirements-linux-cpu.lock")
+        report["implementation_sha256"].update({name: sha256_file(HERE / name) for name in
+                                               ("fastconformer.py", "fastconformer_worker.py")})
     with tempfile.TemporaryDirectory(prefix="quran-repetition-") as temporary:
         directory = outside_checkout(temporary)
         configurations, scoring_samples, audio_info = [], [], []
@@ -174,11 +216,15 @@ def run_repetition(args, models, selection, public_lock):
         report["audio"] = {"inferences": len(configurations),
                            "total_seconds": sum(item["seconds"] for item in audio_info),
                            "total_decode_seconds": sum(item["decode_seconds"] for item in audio_info)}
-        config = {"model": "tilawi", "directory": str(cache / "tilawi"), "samples": configurations}
+        config = {"model": model, "directory": str(cache / model), "samples": configurations}
         env = dict(os.environ, HF_HUB_OFFLINE="1", TRANSFORMERS_OFFLINE="1",
                    HF_HUB_DISABLE_TELEMETRY="1", DO_NOT_TRACK="1", TOKENIZERS_PARALLELISM="false",
                    OMP_NUM_THREADS="2", MKL_NUM_THREADS="2")
-        result = subprocess.run(["node", str(HERE / "batch_node_runner.mjs")], input=json.dumps(config),
+        runner = (["node", str(HERE / "batch_node_runner.mjs")] if model == "tilawi" else
+                  [sys.executable, str(HERE / "fastconformer_worker.py")])
+        if model == "mohammed":
+            env.update(TORCH_FORCE_WEIGHTS_ONLY_LOAD="1", WANDB_MODE="disabled", CUDA_VISIBLE_DEVICES="")
+        result = subprocess.run(runner, input=json.dumps(config),
                                 text=True, capture_output=True, env=env, check=True, timeout=3900)
         private = json.loads(result.stdout)
         trials = private["samples"]
@@ -186,7 +232,7 @@ def run_repetition(args, models, selection, public_lock):
                 type(trial["index"]) is not int or trial["index"] != index
                 for index, trial in enumerate(trials))):
             raise ValueError("Worker returned missing, repeated or unordered clips")
-        report["model"].update(worker_metadata(private))
+        report["model"].update(worker_metadata(private, model))
         # Existing scorer validates finite timings and bounded text for every row.
         rows = [score_trial(sample, trial, audio)
                 for sample, trial, audio in zip(scoring_samples, trials, audio_info)]
@@ -212,12 +258,15 @@ def main(argv=None):
     parser.add_argument("--manifest", required=True)
     parser.add_argument("--cache", required=True)
     parser.add_argument("--output", required=True)
+    parser.add_argument("--model", choices=("tilawi", "mohammed"), default="tilawi")
     args = parser.parse_args(argv)
     try:
         cache, output = outside_checkout(args.cache), outside_checkout(args.output)
         if output.exists() or output == cache or cache in output.parents:
             raise ValueError("Output must be new and outside the model cache")
         models = validate_manifest(json.loads((HERE / "models.json").read_text()))
+        if args.model == "mohammed":
+            models["models"].update(load_pin()["models"])
         selection = json.loads((HERE / "repetition-samples.json").read_text())
         public_lock = json.loads((HERE / "public-datasets.json").read_text())
         report = run_repetition(args, models, selection, public_lock)

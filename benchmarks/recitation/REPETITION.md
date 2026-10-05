@@ -1,14 +1,15 @@
-# Does Tilawi keep repeated audio?
+# Do the models keep repeated audio?
 
 This small test checks one part of [ASR-004 #7](https://github.com/thakurshadman/quran-hifz/issues/7):
 what happens when we play exactly the same audio twice? It does not change the app.
+We first tested Tilawi, then added Mohammed’s FastConformer on the same inputs.
 
 Think of a recording saying “A B C.” We play it twice, with a short pause.
 If Tilawi first writes “A B C,” we check whether the double recording gives
 “A B C A B C.” This tests consistency. It does not prove that “A B C” was a
 correct transcript in the first place.
 
-## Result
+## Tilawi result
 
 **Tilawi did not pass this strict repetition check.** None of the nine pairs
 with a nonempty original transcript produced exactly two copies of that
@@ -53,11 +54,12 @@ replacement model.
   No words are synthesized, removed or rearranged. Both copies stay identical.
 - Freeze source, reference and decoded-audio hashes before running the model.
   The [sample list](repetition-samples.json) records them without audio or text.
-- Run the existing Tilawi model and decoder unchanged. Use one model load,
+- Run each existing model and decoder unchanged. Compare the double with that
+  model’s own original output. Use one model load,
   two compute threads, no warmups and one pass per input. Run each original
   immediately before its double: **20 inputs from 10 source clips**.
 - Keep the existing text normalization. It removes punctuation and vowel marks;
-  it does not test pronunciation or tajweed. No expected passage goes to Tilawi.
+  it does not test pronunciation or tajweed. Neither model gets an expected passage.
 
 Each pair gets exactly one result:
 
@@ -105,6 +107,32 @@ Transcripts stay in local process memory and pipes, not reports. Reports contain
 hashes, counts, timings and software versions. We do not publish audio or text.
 CPU timing excludes loading and audio conversion; the Tilawi timer also excludes
 text decoding. It does not measure phone speed or live feedback delay.
+
+### Run Mohammed’s FastConformer
+
+Use the same prepared OpenSLR manifest. Follow the environment installation in
+the [earlier FastConformer test](FASTCONFORMER.md#repeat-the-comparison), using a
+disk-backed directory such as `/var/tmp/fastconformer-env`. Its existing lockfile
+pins NeMo 2.5.3, PyTorch 2.8.0 CPU and the supporting packages. This follow-up adds
+no dependencies. Both models’ publishers declare CC-BY-4.0; the earlier document
+also explains software licenses and runtime limits.
+
+```sh
+/var/tmp/fastconformer-env/bin/python benchmarks/recitation/fastconformer.py download \
+  --cache /var/tmp/fastconformer-models --models mohammed
+/var/tmp/fastconformer-env/bin/python benchmarks/recitation/repetition.py \
+  --model mohammed \
+  --manifest /var/tmp/tilawi-public/openslr132.json \
+  --cache /var/tmp/fastconformer-models \
+  --output /var/tmp/mohammed-repetition.json
+```
+
+The unchanged worker uses the pinned `phase3_full` checkpoint, float32 CPU
+inference and greedy RNNT decoding. It receives no passage prompt. The clip list,
+audio copies, pause and scoring are exactly the same as Tilawi’s first run.
+Tilawi is not rerun in this follow-up. These are separate runs on the same host.
+Mohammed’s timer includes text decoding, unlike Tilawi’s, so timing differences
+are not a pure comparison of model speed.
 
 ## What still needs testing
 

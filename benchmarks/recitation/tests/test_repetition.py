@@ -225,5 +225,105 @@ class OrchestrationTests(RepetitionFixture):
         self.assertNotIn("PRIVATE_", stderr.getvalue())
 
 
+class CandidateRepetitionTests(RepetitionFixture):
+    def candidate_worker(self):
+        return {**copy.deepcopy(self.worker),
+            "decoding": repetition.MOHAMMED_DECODING,
+            "timer_scope": repetition.MOHAMMED_TIMER_SCOPE,
+            "load_timer_scope": repetition.MOHAMMED_LOAD_TIMER_SCOPE,
+            "runtime": {"python": "3.12.14", "numpy": "1.26.4", "torch": "2.8.0+cpu",
+                        "torchaudio": "2.8.0+cpu", "nemo_toolkit": "2.5.3"},
+            "configuration": {"decoder": "rnnt", "strategy": "greedy_batch", "max_symbols": 10,
+                "batch_size": 1, "num_workers": 0, "weights_only": True, "device": "cpu",
+                "seeds": {"torch": 0, "numpy": 0, "python": 0}, "cuda_graphs": False,
+                "parameter_dtype": "torch.float32", "deterministic_algorithms": False,
+                "checkpoint_nemo_version": "2.0.0rc1", "attention_context": [-1, -1],
+                "checkpoint_config_sha256": "a" * 64,
+                "decoding_config": {"fixture": "PRIVATE_DECODER_METADATA"},
+                "private_field": "PRIVATE_CONFIGURATION"},
+            "private_field": "PRIVATE_WORKER_METADATA"}
+
+    def install_candidate_fixture(self):
+        self.args.model = "mohammed"
+        directory = self.root / "cache" / "mohammed"
+        directory.mkdir()
+        (directory / "weights.bin").write_bytes(b"weights")
+        self.models["models"]["mohammed"] = copy.deepcopy(self.models["models"]["tilawi"])
+        self.models["models"]["mohammed"]["repo"] = "toy/candidate"
+
+    def test_default_remains_node_tilawi_without_candidate_provenance(self):
+        report, process, _ = self.run_probe()
+        self.assertEqual(process.call_args.args[0][0], "node")
+        self.assertEqual(report["model"]["key"], "tilawi")
+        self.assertEqual(report["model_manifest_file"], "models.json")
+        self.assertNotIn("runtime_lock_sha256", report)
+        self.assertNotIn("fastconformer_worker.py", report["implementation_sha256"])
+
+    def test_candidate_dispatch_keeps_pair_inputs_scoring_and_adds_correct_provenance(self):
+        self.install_candidate_fixture()
+        report, process, stdout = self.run_probe(self.candidate_worker())
+        self.assertEqual(process.call_args.args[0], [sys.executable, str(repetition.HERE / "fastconformer_worker.py")])
+        config = json.loads(process.call_args.kwargs["input"])
+        self.assertEqual(config["model"], "mohammed")
+        self.assertEqual(config["directory"], str(self.root / "cache" / "mohammed"))
+        self.assertEqual([sample["index"] for sample in config["samples"]], list(range(20)))
+        self.assertTrue(all(set(sample) == {"index", "pcm"} for sample in config["samples"]))
+        self.assertEqual([pair["input"] for pair in report["pairs"]], self.selection["samples"])
+        self.assertEqual(report["primary"], {"pairs": 10, "exact_two_copy_hypothesis": 7,
+            "exact_single_copy": 1, "other_different": 1, "unscorable_blank_baseline": 1, "scorable_pairs": 9})
+        self.assertEqual(report["model"]["provenance"], self.models["models"]["mohammed"])
+        self.assertEqual(report["model_manifest_file"], "fastconformer_models.json")
+        self.assertEqual(report["model_manifest_sha256"], repetition.sha256_file(repetition.HERE / "fastconformer_models.json"))
+        self.assertEqual(report["runtime_lock_sha256"], repetition.sha256_file(repetition.HERE / "fastconformer-requirements-linux-cpu.lock"))
+        self.assertIn("fastconformer_worker.py", report["implementation_sha256"])
+        self.assertEqual(process.call_args.kwargs["env"]["TORCH_FORCE_WEIGHTS_ONLY_LOAD"], "1")
+        self.assertEqual(process.call_args.kwargs["env"]["CUDA_VISIBLE_DEVICES"], "")
+        self.assertNotIn("PRIVATE_", json.dumps(report) + stdout)
+        self.assertTrue(all(not Path(sample["pcm"]).exists() for sample in config["samples"]))
+
+    def test_candidate_metadata_hashes_decoder_settings_without_echoing_them(self):
+        private = self.candidate_worker()
+        metadata = repetition.worker_metadata(private, "mohammed")
+        expected_hash = repetition.digest(json.dumps(private["configuration"]["decoding_config"], sort_keys=True).encode())
+        self.assertEqual(metadata["configuration"]["decoding_config_sha256"], expected_hash)
+        self.assertEqual(metadata["configuration"]["checkpoint_config_sha256"], "a" * 64)
+        self.assertEqual(metadata["runtime"], private["runtime"])
+        self.assertNotIn("PRIVATE_", json.dumps(metadata))
+        self.assertNotIn("decoding_config", metadata["configuration"])
+
+    def test_candidate_metadata_rejects_changed_decoder_settings_and_private_runtime(self):
+        for key, value in (("device", "cuda"), ("decoder", "ctc"), ("max_symbols", 11),
+                           ("weights_only", 1), ("checkpoint_config_sha256", "PRIVATE_PATH"),
+                           ("decoding_config", [])):
+            private = self.candidate_worker()
+            private["configuration"][key] = value
+            with self.subTest(key=key), self.assertRaises(ValueError):
+                repetition.worker_metadata(private, "mohammed")
+        private = self.candidate_worker()
+        private["runtime"]["python"] = "/PRIVATE_PATH"
+        with self.assertRaises(ValueError):
+            repetition.worker_metadata(private, "mohammed")
+        with self.assertRaises(ValueError):
+            repetition.worker_metadata(self.candidate_worker(), "tilawi")
+
+    def test_cli_loads_candidate_only_when_explicitly_selected(self):
+        for selected in (None, "mohammed"):
+            args = ["--manifest", str(self.manifest), "--cache", self.args.cache,
+                    "--output", str(self.root / "result.json")]
+            if selected:
+                args += ["--model", selected]
+            with self.subTest(selected=selected), \
+                    mock.patch.object(repetition, "load_pin", return_value={"models": {"mohammed": {"fixture": True}}}) as pin, \
+                    mock.patch.object(repetition, "run_repetition", return_value={}) as run, \
+                    mock.patch.object(repetition, "save_report"), contextlib.redirect_stdout(io.StringIO()):
+                self.assertEqual(repetition.main(args), 0)
+            self.assertEqual(run.call_args.args[0].model, selected or "tilawi")
+            if selected:
+                pin.assert_called_once_with()
+                self.assertEqual(run.call_args.args[1]["models"]["mohammed"], {"fixture": True})
+            else:
+                pin.assert_not_called()
+
+
 if __name__ == "__main__":
     unittest.main()
