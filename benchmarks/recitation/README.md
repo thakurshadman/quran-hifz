@@ -6,6 +6,9 @@ For the larger, three-dataset comparison, see [results](PUBLIC-RESULTS.md) and
 The follow-up [FastConformer comparison](FASTCONFORMER.md) and
 [Qwen3-ASR comparison](QWEN.md) use Tilawi as the baseline.
 
+The [repeated-audio test](REPETITION.md) checks whether Tilawi and Mohammed’s model keep two copies
+when exactly the same recording is played twice.
+
 This ASR-004 experiment compares four recognizers using the **same audio**,
 fixed model files, the same reference scope and explicit scoring rules. It is
 an exploratory batch-transcription test, not a complete benchmark of students,
