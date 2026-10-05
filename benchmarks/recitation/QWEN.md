@@ -5,6 +5,74 @@ supports Arabic, with our Tilawi baseline. It supports
 [ASR-004 #7](https://github.com/thakurshadman/quran-hifz/issues/7).
 The app and its production architecture are unchanged.
 
+## Results
+
+All **240 transcriptions completed**, with no processing failures in the full
+run. Tilawi reproduced its previous text counts on every clip. These results
+describe the raw-generation configuration below, not Qwen’s default transcription
+wrapper.
+
+Tilawi matched 82 of 120 clips exactly; Qwen matched 8. Qwen also had more
+word differences on each source. Its median processing time was about 15–19
+times Tilawi’s, depending on the source. This CPU configuration gives us no
+reason to replace Tilawi. It does not rule out other Qwen sizes, runtimes or
+decoding configurations.
+
+Exact matches with the supplied expected text after common normalization:
+
+| Model | OpenSLR (50) | Error dataset (50) | RetaSy (20) |
+| --- | ---: | ---: | ---: |
+| Tilawi | 47/50 | 29/50 | 6/20 |
+| Qwen3-ASR 0.6B | 0/50 | 7/50 | 1/20 |
+
+Word differences count substituted, missing and added words, divided by total
+reference words. Lower is closer to the supplied text. These are not verified
+speech error rates or learner mistake-detection scores.
+
+| Model | OpenSLR (664 words) | Error dataset (249 words) | RetaSy (88 words) |
+| --- | ---: | ---: | ---: |
+| Tilawi | 3.01% | 37.35% | 43.18% |
+| Qwen3-ASR 0.6B | 47.14% | 70.28% | 111.36% |
+
+Source-label groups, shown as exact text matches:
+
+| Model | Error tags (20) | No error tags (30) | RetaSy “correct” (10) | RetaSy “in_correct” (10) |
+| --- | ---: | ---: | ---: | ---: |
+| Tilawi | 10/20 | 19/30 | 5/10 | 1/10 |
+| Qwen3-ASR 0.6B | 1/20 | 6/30 | 1/10 | 0/10 |
+
+The publisher’s labels are not independently verified judgments. Empty tags do
+not prove correct recitation. Matching the expected text for a clip labelled
+incorrect does not prove the model noticed a mistake.
+
+Median CPU processing seconds per clip:
+
+| Model | OpenSLR | Error dataset | RetaSy |
+| --- | ---: | ---: | ---: |
+| Tilawi | 0.629 | 0.160 | 0.148 |
+| Qwen3-ASR 0.6B | 9.311 | 3.113 | 2.749 |
+
+The models use different timer scopes, as explained below. These native CPU
+numbers do not measure browser, GPU, quantized Qwen or live feedback speed.
+
+### Evidence
+
+The [complete checked report](published/qwen-120.json) contains all clip counts,
+per-source and per-label totals, loading times, descriptive p95, actual generation
+settings, model hashes and runtime versions. It contains no audio, reference
+text, transcriptions, speaker IDs or local file paths.
+
+- Clean executing commit: `d4638aab11fa704ce420dce57c0e41b147f73d1d`.
+- Machine: Linux x86-64, AMD EPYC 9V74 virtual CPU with three logical CPUs
+  visible; two compute threads and one inter-op thread. The cgroup memory
+  limit was 8 GiB, with model files and environments on disk-backed storage.
+- All 120 source files matched the frozen audio/reference hashes. The same
+  RetaSy 20 were freshly prepared, without changing their selection. After
+  independent source verification, their 20 temporary audio files and manifest
+  were deleted.
+- All 119 benchmark tests and 30 documentation tests passed. They check the
+  harness; the 240 real transcriptions were run locally, outside GitHub Actions.
+
 ## Fixed comparison
 
 Use the same [120 frozen public recordings](PUBLIC-DATASETS.md): 50 OpenSLR,
@@ -64,9 +132,13 @@ loading, disabled remote model code and native compatibility testing. These
 checks are not a complete dependency security or training-data rights audit.
 
 Use Linux x86-64, Python 3.12.14, Node 24.19.0 and FFmpeg. Allow at least 6 GB
-free disk space for the environment, assets and temporary files. The host reports about 10 GB RAM, but this workspace has an 8 GiB process
+free disk space for the environment, assets and temporary files. The host reports
+about 10 GB RAM, but this workspace has an 8 GiB process
 memory limit. Use disk-backed storage, not a RAM-backed temporary directory,
 for the environment and model cache. Keep downloads, audio and reports outside Git.
+An initial setup attempt ran out of memory while old caches occupied RAM-backed
+storage. Moving those caches to disk resolved it; model and decoding settings
+were unchanged. The completed comparison had no processing failures.
 
 ```sh
 python3.12 -m venv /var/tmp/qwen-benchmark-env
