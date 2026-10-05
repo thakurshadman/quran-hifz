@@ -9,40 +9,55 @@ If Tilawi first writes “A B C,” we check whether the double recording gives
 “A B C A B C.” This tests consistency. It does not prove that “A B C” was a
 correct transcript in the first place.
 
-## Tilawi result
+## Results
 
-**Tilawi did not pass this strict repetition check.** None of the nine pairs
-with a nonempty original transcript produced exactly two copies of that
-transcript. One original produced no words, so that pair could not be compared.
+**Neither model consistently returned the repeated text.** Mohammed’s model
+produced an exact double in one of nine comparable pairs; Tilawi did so in none.
+Both produced no words on the same remaining source clip.
 
-| Outcome | Pairs |
-| --- | ---: |
-| Exact two-copy output | 0 |
-| Exact one-copy output | 0 |
-| Other output | 9 |
-| Cannot compare: empty original output | 1 |
-| Total | 10 |
+| Outcome | Tilawi | Mohammed FastConformer |
+| --- | ---: | ---: |
+| Exact two-copy output | 0 | 1 |
+| Exact one-copy output | 0 | 4 |
+| Other output | 9 | 4 |
+| Cannot compare: empty original output | 1 | 1 |
+| Total pairs | 10 | 10 |
 
-All 20 inputs completed without a processing failure. An empty transcript is
-still a recorded outcome. The nine changed outputs do **not** prove that Tilawi
-removed every repetition or silently corrected the recitation. They show that
-we cannot assume doubled audio will produce doubled text.
+For four pairs, Mohammed’s output for doubled audio was exactly its original
+transcript once. That is concerning for repeat handling, but it does not prove
+deliberate autocorrection or performance on natural spoken mistakes. “Other
+output” does not tell us which parts of a repetition were kept or lost.
 
-As a separate check, 8 of 10 original outputs matched the supplied passage;
-none of the double outputs matched the doubled passage. The original word
-counts matched our earlier Tilawi run on all ten clips. Median CPU inference
-took **0.485 seconds** for originals and **0.971 seconds** for doubles.
+All **40 inputs across the two runs** completed without a processing failure.
+Blank transcripts remain visible in the counts. Tilawi’s earlier run is reused;
+it was not rerun when Mohammed’s model was added.
 
-The [full report](published/repetition-20.json) records all ten pairs, counts,
-timings and source/model/software hashes. It was run from clean commit
-`8d673c55d930f6be92734993802e364b83965a08`, before results were added. The machine
-was Linux x86-64 on an AMD EPYC 9V74 virtual CPU, with three logical CPUs visible.
-All 133 benchmark tests and 30 documentation tests passed. These code tests are
-separate from the 20 real model inputs.
+As a separate check, these outputs matched the source’s supplied passage:
+
+| Model | Originals | Doubles | Median CPU seconds: original / double |
+| --- | ---: | ---: | ---: |
+| Tilawi | 8/10 | 0/10 | 0.485 / 0.971 |
+| Mohammed FastConformer | 7/10 | 1/10 | 0.496 / 0.807 |
+
+The original word counts matched the earlier 120-clip test for each model on
+all ten clips. Timing scopes differ, as explained below. These numbers do not
+measure phone performance or establish an overall winner.
+
+The full reports record each pair, counts, timings and source/model/software
+hashes. Both runs used clean commits, before their results were added:
+
+- [Tilawi report](published/repetition-20.json):
+  `8d673c55d930f6be92734993802e364b83965a08`.
+- [Mohammed report](published/repetition-mohammed-20.json):
+  `b3a165d5db86b993b961bdc10ad867f62560fe37`.
+
+Both ran on the same Linux x86-64 host with an AMD EPYC 9V74 virtual CPU and
+three logical CPUs visible. All 138 benchmark tests and 30 documentation tests
+passed. These code checks are separate from the real model runs.
 
 Next, inspect repeated speech with verified word transcripts before relying on
-Tilawi for hifz feedback. This test alone cannot identify the cause or choose a
-replacement model.
+either model for hifz feedback. This test alone cannot identify the cause or
+choose a replacement model.
 
 ## Fixed test
 
