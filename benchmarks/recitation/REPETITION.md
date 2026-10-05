@@ -8,6 +8,41 @@ If Tilawi first writes “A B C,” we check whether the double recording gives
 “A B C A B C.” This tests consistency. It does not prove that “A B C” was a
 correct transcript in the first place.
 
+## Result
+
+**Tilawi did not pass this strict repetition check.** None of the nine pairs
+with a nonempty original transcript produced exactly two copies of that
+transcript. One original produced no words, so that pair could not be compared.
+
+| Outcome | Pairs |
+| --- | ---: |
+| Exact two-copy output | 0 |
+| Exact one-copy output | 0 |
+| Other output | 9 |
+| Cannot compare: empty original output | 1 |
+| Total | 10 |
+
+All 20 inputs completed without a processing failure. An empty transcript is
+still a recorded outcome. The nine changed outputs do **not** prove that Tilawi
+removed every repetition or silently corrected the recitation. They show that
+we cannot assume doubled audio will produce doubled text.
+
+As a separate check, 8 of 10 original outputs matched the supplied passage;
+none of the double outputs matched the doubled passage. The original word
+counts matched our earlier Tilawi run on all ten clips. Median CPU inference
+took **0.485 seconds** for originals and **0.971 seconds** for doubles.
+
+The [full report](published/repetition-20.json) records all ten pairs, counts,
+timings and source/model/software hashes. It was run from clean commit
+`8d673c55d930f6be92734993802e364b83965a08`, before results were added. The machine
+was Linux x86-64 on an AMD EPYC 9V74 virtual CPU, with three logical CPUs visible.
+All 133 benchmark tests and 30 documentation tests passed. These code tests are
+separate from the 20 real model inputs.
+
+Next, inspect repeated speech with verified word transcripts before relying on
+Tilawi for hifz feedback. This test alone cannot identify the cause or choose a
+replacement model.
+
 ## Fixed test
 
 - Use the first ten eligible clips in our frozen OpenSLR sample list. A clip
