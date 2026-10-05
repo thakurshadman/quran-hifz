@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "model": {
+    "repo": "obadx/muaalem-model-v3_2",
+    "revision": "01a1ef9fbe40d144ef845101e89ff924aed3fef5",
+    "license": "MIT",
+    "files": [
+      {
+        "path": "config.json",
+        "bytes": 2183,
+        "sha256": "2094c962ca4a167304d8a2c6d2ca429060cbb6c817de09904739ab088bbcf16f"
+      },
+      {
+        "path": "preprocessor_config.json",
+        "bytes": 275,
+        "sha256": "8e6281aad64f97e40534135a59dcc5d33571efae376f2a25adf5551951897ab4"
+      },
+      {
+        "path": "vocab.json",
+        "bytes": 1532,
+        "sha256": "dcbdac0162632df023002ca1cdd48e74f0f77a328d7f69503f9ff021afb19473"
+      },
+      {
+        "path": "model.safetensors",
+        "bytes": 2423124012,
+        "sha256": "6b6a2e85303d17ff0f3af5e1fc79ac83daecee409c756ddf27f0ced59393bb41"
+      }
+    ]
+  },
+  "source": {
+    "repo": "obadx/quran-muaalem",
+    "revision": "a0a9e43e71063c8e8367b8cbbb88f6e45d7a65f1",
+    "license": "MIT",
+    "files": [
+      {
+        "path": "src/quran_muaalem/modeling/modeling_multi_level_ctc.py",
+        "local_name": "modeling_multi_level_ctc.py",
+        "bytes": 5891,
+        "sha256": "21424f97dcce580b312d3954e92164a486b5031aac057c6a425aa4b153819172"
+      },
+      {
+        "path": "src/quran_muaalem/modeling/configuration_multi_level_ctc.py",
+        "local_name": "configuration_multi_level_ctc.py",
+        "bytes": 18658,
+        "sha256": "bc8d1a13d76c1066a99edf164e6a1136a86bb18d92654d726d691cdc7ef6b93f"
+      }
+    ]
+  }
+}

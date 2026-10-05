@@ -9,6 +9,9 @@ The follow-up [FastConformer comparison](FASTCONFORMER.md) and
 The [repeated-audio test](REPETITION.md) checks whether Tilawi and Mohammed’s model keep two copies
 when exactly the same recording is played twice.
 
+The [Muaalem sound-level test](MUAALEM.md) inspects raw phoneme predictions.
+The [leaderboard research](PHONEME-MODELS.md) covers RAM, Utokyo and SQZ_ww.
+
 This ASR-004 experiment compares four recognizers using the **same audio**,
 fixed model files, the same reference scope and explicit scoring rules. It is
 an exploratory batch-transcription test, not a complete benchmark of students,
