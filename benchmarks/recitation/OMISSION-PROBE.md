@@ -57,7 +57,10 @@ The separate runtime uses Torch 2.8.0 CPU and Transformers 4.57.6, adding the
 pinned reference package and its locked dependencies. It adds disk space and
 maintenance but no paid service or production dependency. This avoids manually
 inventing pronunciation references. The lock is version-pinned, not a complete
-package security audit; review version changes before rerunning.
+package security audit; review version changes before rerunning. The reference
+package depends on Levenshtein (GPL-2.0-or-later), alongside MIT/BSD-style
+packages. These are isolated local research tools; distributing an application
+with them would need a separate license assessment.
 
 ```sh
 python3.12 -m venv /var/tmp/omission-env
