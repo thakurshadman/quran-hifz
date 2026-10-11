@@ -57,7 +57,7 @@ it according to the checkbox, while source display keeps the original intact.
 Word positions refer to the original source row, including that prefix.
 
 Technical source checks do not replace a qualified Qur'an-content review. That
-review remains open before production use of this reference and normalization.
+review remains open before merging or accepting this reference and normalization.
 
 ## Run and verify
 
