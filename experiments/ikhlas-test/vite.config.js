@@ -13,6 +13,7 @@ const omitUnusedRuntime = () => ({
 });
 
 export default defineConfig({
+  build: { target: "esnext" },
   plugins: [omitUnusedRuntime()],
   worker: { plugins: () => [omitUnusedRuntime()] },
 });

@@ -13,7 +13,7 @@ jobs:
   experiment:
     name: Experiment checks
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 20
     defaults:
       run:
         working-directory: experiments/ikhlas-test
@@ -24,6 +24,17 @@ jobs:
       - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
           node-version: 24.19.0
+      - name: Install pinned Rust tools
+        working-directory: .
+        run: |
+          rustup show
+          cargo install wasm-bindgen-cli --version 0.2.104 --locked
+      - name: Check Rust core
+        working-directory: .
+        run: |
+          cargo fmt --check
+          cargo clippy --locked --all-targets -- -D warnings
+          cargo test --locked
       - run: npm ci --ignore-scripts
       - run: npm test
       - run: npm run build

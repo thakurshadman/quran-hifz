@@ -1,9 +1,19 @@
 // These doubles test lifecycle contracts, not microphone hardware or ASR quality.
+// Latin placeholders are deliberately not Qur'an text.
+export const syntheticRecords = [
+  ...['alpha beta gamma omega', 'maple oak pine', 'quartz ruby stone', 'tulip umber violet',
+    'willow xenia yellow', 'zebra acorn brook', 'cloud dawn evening frost'].map((text, index) =>
+    ({ surah: 1, ayah: index + 1, text_uthmani: text })),
+  ...['alpha beta gamma omega amber birch cedar', 'delta elm fern', 'gold hazel iris',
+    'jade kite larch moss'].map((text, index) =>
+    ({ surah: 112, ayah: index + 1, text_uthmani: text })),
+];
+
 export async function installDoubles(page) {
-  await page.addInitScript(() => {
+  await page.addInitScript((records) => {
     const state = window.testDevices = {
       permission: 'allow', requests: 0, streams: [], contexts: [], workers: [],
-      autoReady: true, resolvePermission: null,
+      autoReady: true, resolvePermission: null, records,
     };
     function stream() {
       const track = new EventTarget();
@@ -62,7 +72,7 @@ export async function installDoubles(page) {
       postMessage(message) {
         this.messages.push(message);
         if (message.type === 'load' && state.autoReady) {
-          queueMicrotask(() => this.emit({ type: 'ready' }));
+          queueMicrotask(() => this.emit({ type: 'ready', records: state.records }));
         }
       }
       terminate() { this.terminated = true; }
@@ -94,7 +104,7 @@ export async function installDoubles(page) {
       context.state = reason;
       context.onstatechange?.(new Event('statechange'));
     };
-  });
+  }, syntheticRecords);
 }
 
 export async function expectResourcesReleased(page, expect) {

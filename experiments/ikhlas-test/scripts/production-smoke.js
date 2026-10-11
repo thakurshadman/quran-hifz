@@ -18,7 +18,7 @@ try {
   await expect(page.locator('#start')).toBeVisible({ timeout: 180000 });
   await page.locator('#start').click();
   await expect(page.locator('#mic-label')).toHaveText('Microphone on');
-  await expect(page.locator('#timer')).toHaveText('0:02 / 0:30', { timeout: 10000 });
+  await expect(page.locator('#timer')).toHaveText('0:02 / 1:00', { timeout: 10000 });
   await page.locator('#stop').click();
   await expect(page.locator('#mic-label')).toHaveText('Microphone off');
   await expect(page.locator('#status')).toContainText(/Done\.|No words were recognized/, { timeout: 180000 });

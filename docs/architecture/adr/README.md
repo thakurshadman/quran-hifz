@@ -1,7 +1,8 @@
 # Architecture decision records
 
-No architectural decisions are accepted yet. Candidate technologies mentioned in
-planning are not commitments.
+The owner selected Rust for the personal practice app; see
+[ADR-001](ADR-001-rust-practice-core.md). Other candidate technologies mentioned
+in planning are not commitments.
 
 Use [ADR-TEMPLATE.md](ADR-TEMPLATE.md) and the next available `ADR-NNN-short-title.md`.
 Assign IDs once; retain superseded records. Statuses are **Proposed**, **Accepted**,

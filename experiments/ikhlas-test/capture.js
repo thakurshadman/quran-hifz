@@ -1,4 +1,4 @@
-export const MAX_SECONDS = 30;
+export const MAX_SECONDS = 60;
 export const TARGET_RATE = 16000;
 
 /** Resampling affects only temporary microphone data, never reference text. */
