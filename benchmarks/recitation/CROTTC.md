@@ -74,8 +74,8 @@ conversion are separate. It is not phone, browser or streaming latency.
 The isolated [runtime lock](crottc-requirements-linux-cpu.lock) records installed
 versions, not wheel hashes. SpeechBrain 1.0.3 and Transformers 4.57.6 use Apache-2.0;
 PyTorch/Torchaudio 2.7.1 CPU use BSD-style licenses. Model weights are Apache-2.0.
-The upstream model configuration and inference code were inspected to reproduce
-its architecture. This is not a complete dependency or training-data audit.
+The model configuration and [upstream inference code](https://github.com/Secondtonumb/IF-MDD/tree/cca150ec4ff00e01d61a613092d1d178e661dfb2)
+were inspected to reproduce its architecture. This is not a complete dependency or training-data audit.
 Updates require reviewing the pins and rerunning strict-load and regression checks.
 
 Using SpeechBrain avoids a custom rewrite of its Conformer. It adds environment
