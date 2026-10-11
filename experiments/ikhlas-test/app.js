@@ -1,8 +1,11 @@
+import { selectReference, compareWords } from './word-check.js';
 import { MicrophoneCapture, microphoneError, MAX_SECONDS } from './capture.js';
 
 const ui = Object.fromEntries(['load', 'start', 'stop', 'cancel', 'clear', 'status', 'level', 'timer',
-  'mic-label', 'state-badge', 'result-panel', 'transcript', 'timing'].map((id) => [id, document.getElementById(id)]));
+  'mic-label', 'state-badge', 'result-panel', 'transcript', 'timing', 'surah', 'basmala', 'word-summary', 'word-findings', 'reference-verses'].map((id) => [id, document.getElementById(id)]));
 let state = 'idle';
+let records = null;
+let activeReference = null;
 let worker = null;
 let operation = 0;
 let interval = null;
@@ -29,6 +32,9 @@ function clearResult() {
   ui.transcript.textContent = '';
   ui.timing.textContent = '';
   ui['result-panel'].hidden = true;
+  ui['word-summary'].textContent = '';
+  ui['word-findings'].replaceChildren();
+  ui['reference-verses'].replaceChildren();
 }
 
 function clearTimers() {
@@ -54,8 +60,9 @@ function reset(message = 'Test cleared. Load the model when you are ready.') {
   capture.cancel();
   worker?.terminate();
   worker = null;
+  records = activeReference = null;
   clearResult();
-  ui.timer.textContent = '0:00 / 0:30';
+  ui.timer.textContent = '0:00 / 1:00';
   display('idle', message);
 }
 
@@ -72,15 +79,21 @@ ui.load.addEventListener('click', () => {
         ui.status.textContent = typeof data.message === 'string' ? data.message.slice(0, 240) : 'Loading the speech model…';
       } else if (data.type === 'ready' && state === 'loading' && operation === id) {
         clearTimers();
-        display('ready', 'Ready. Press Start and recite Al-Ikhlas from memory, then press Stop.');
+        try {
+          selectReference(data.records, 1); selectReference(data.records, 112);
+          records = data.records;
+        } catch { reset('The reference could not be verified. Reload before trying again.'); return; }
+        display('ready', 'Ready. Choose your passage, press Start and recite from memory, then press Stop.');
       } else if (data.type === 'result' && state === 'transcribing') {
         clearTimers();
-        const text = typeof data.text === 'string' ? data.text.trim().slice(0, 5000) : '';
+        if (typeof data.text !== 'string' || data.text.length > 5000) { reset('The recognised text was invalid or too long. No word judgement was made.'); return; }
+        const text = data.text.trim();
         if (!text) {
           display('ready', 'No words were recognized. That is not a judgement of your recitation. Try again closer to your microphone.');
           return;
         }
         ui.transcript.textContent = text;
+        showWordCheck(text);
         ui.timing.textContent = Number.isFinite(data.elapsedMs) && data.elapsedMs >= 0
           ? `Processing took ${(data.elapsedMs / 1000).toFixed(1)} seconds on this device.` : '';
         ui['result-panel'].hidden = false;
@@ -106,16 +119,18 @@ ui.start.addEventListener('click', async () => {
   if (!['ready', 'result'].includes(state)) return;
   const id = ++operation;
   clearResult();
-  ui.timer.textContent = '0:00 / 0:30';
+  try { activeReference = selectReference(records, Number(ui.surah.value), ui.basmala.checked); }
+  catch { reset('The reference is unavailable. Reload the test.'); return; }
+  ui.timer.textContent = '0:00 / 1:00';
   display('requesting', 'Allow microphone access when your browser asks. You can cancel at any time.');
   try {
     const active = await capture.start();
     if (!active || id !== operation) return;
     startedAt = performance.now();
-    display('recording', 'Listening. Recite Al-Ikhlas, then press Stop. Capture ends after 30 seconds.');
+    display('recording', 'Listening. Recite your selected passage, then press Stop. Capture ends after 60 seconds.');
     interval = setInterval(() => {
       const seconds = Math.min(MAX_SECONDS, Math.floor((performance.now() - startedAt) / 1000));
-      ui.timer.textContent = `0:${String(seconds).padStart(2, '0')} / 0:30`;
+      ui.timer.textContent = `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')} / 1:00`;
     }, 200);
     timeout = setTimeout(finish, MAX_SECONDS * 1000);
   } catch (error) {
@@ -155,16 +170,40 @@ ui.cancel.addEventListener('click', () => {
     clearTimers();
     capture.cancel();
     clearResult();
-    ui.timer.textContent = '0:00 / 0:30';
+    ui.timer.textContent = '0:00 / 1:00';
     display('ready', 'Cancelled. Microphone off and audio cleared. Try again when ready.');
   }
 });
 ui.clear.addEventListener('click', () => {
   clearResult();
-  ui.timer.textContent = '0:00 / 0:30';
+  ui.timer.textContent = '0:00 / 1:00';
   display('ready', 'Result cleared. Press Start for another try.');
 });
 window.addEventListener('pagehide', () => reset());
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) reset('Test paused and cleared when you left this tab. Load it again when ready.');
 });
+
+function showWordCheck(text) {
+  const result = compareWords(activeReference, text);
+  ui['word-summary'].textContent = result.status === 'unsure'
+    ? 'Word check: unsure. The recognised words do not give a clear match.'
+    : result.skips.length || result.repeats.length
+      ? 'Possible skips or repeats in the recognised words. Check these yourself.'
+      : 'No clear whole-word skips or verse repeats found. This does not prove correct recitation.';
+  function item(message) { const li = document.createElement('li'); li.textContent = message; ui['word-findings'].append(li); }
+  for (const skip of result.skips) item(`Possible skip: ${skip.verse === 'opening' ? 'opening' : `verse ${skip.verse}`}, source word ${skip.position}.`);
+  for (const verse of result.repeats) item(`Possible repeat: ${verse === 'opening' ? 'opening' : `verse ${verse}`}.`);
+  if (result.outsideWords) item('Closing words: unsure; not checked.');
+  for (const verse of activeReference.filter(v => v.id !== 'opening')) {
+    const p = document.createElement('p'); p.lang = 'ar'; p.dir = 'rtl'; p.textContent = verse.source;
+    ui['reference-verses'].append(p);
+  }
+}
+function changePassage() {
+  ui.basmala.disabled = ui.surah.value === '1';
+  if (['loading', 'requesting', 'recording', 'transcribing'].includes(state)) reset('Passage changed. Attempt cleared; reload the test.');
+  else { clearResult(); activeReference = null; if (state === 'result') display('ready', 'Passage changed. Start a new attempt.'); }
+}
+ui.surah.addEventListener('change', changePassage);
+ui.basmala.addEventListener('change', changePassage);

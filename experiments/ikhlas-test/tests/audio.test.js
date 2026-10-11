@@ -22,13 +22,14 @@ test('44.1 kHz resampling preserves a low-frequency signal within declared toler
 });
 
 test('resampler bounds duration and handles empty and invalid input', () => {
-  assert.equal(resample(new Float32Array(48_000 * 31), 48_000).length, MAX_SECONDS * TARGET_RATE);
+  assert.equal(MAX_SECONDS, 60);
+  assert.equal(resample(new Float32Array(48_000 * 61), 48_000).length, MAX_SECONDS * TARGET_RATE);
   assert.equal(resample(new Float32Array(), 48_000).length, 0);
   for (const rate of [0, -1, NaN, Infinity]) assert.throws(() => resample(new Float32Array(1), rate), TypeError);
   assert.throws(() => resample([1], 48_000), TypeError);
 });
 
-test('audio worklet emits no more than thirty seconds and ends exactly once', () => {
+test('audio worklet emits no more than sixty seconds and ends exactly once', () => {
   let Processor;
   const messages = [];
   const sandbox = {
@@ -41,9 +42,9 @@ test('audio worklet emits no more than thirty seconds and ends exactly once', ()
   const processor = new Processor();
   const input = new Float32Array(128).fill(0.25);
   assert.equal(processor.process([]), true);
-  for (let i = 0; i < (48_000 * 31) / input.length; i++) processor.process([[input]]);
+  for (let i = 0; i < (48_000 * 61) / input.length; i++) processor.process([[input]]);
   const audio = messages.filter((message) => message.type === 'audio');
-  assert.equal(audio.reduce((sum, message) => sum + message.audio.length, 0), 48_000 * 30);
+  assert.equal(audio.reduce((sum, message) => sum + message.audio.length, 0), 48_000 * 60);
   assert.ok(audio.every((message) => message.audio.every((value) => value === 0.25)));
   assert.equal(messages.filter((message) => message.type === 'limit').length, 1);
   assert.equal(processor.process([[input]]), false);

@@ -23,9 +23,13 @@ async function transcribe(page) {
 }
 
 test('does not request microphone until deliberate Start; controls fit and are named', async ({ page }) => {
-  await expect(page.getByRole('heading', { name: 'Try Al-Ikhlas.' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Practice the words.' })).toBeVisible();
   await expect(page.getByRole('status')).toContainText('microphone stays off');
   expect(await page.evaluate(() => window.testDevices.requests)).toBe(0);
+  await page.keyboard.press('Tab');
+  await expect(page.getByRole('combobox', { name: 'Passage' })).toBeFocused();
+  await page.keyboard.press('Tab');
+  await expect(page.getByRole('checkbox')).toBeFocused();
   await page.keyboard.press('Tab');
   await expect(page.getByRole('button', { name: 'Load speech test' })).toBeFocused();
   await page.keyboard.press('Enter');
@@ -151,14 +155,14 @@ test('displays uncertain output as text, then clears it without persistent stora
   await expect(page.locator('#result-panel')).toBeHidden();
 });
 
-test('capture is capped at thirty seconds and the microphone closes at the deadline', async ({ page }) => {
+test('capture is capped at sixty seconds and the microphone closes at the deadline', async ({ page }) => {
   await page.clock.install();
   await record(page);
-  await page.evaluate(() => window.testDevices.pushSamples(48_000 * 31));
-  await page.clock.fastForward(30_000);
+  await page.evaluate(() => window.testDevices.pushSamples(48_000 * 61));
+  await page.clock.fastForward(60_000);
   await expect(page.locator('#state-badge')).toHaveText('Working');
   await expectResourcesReleased(page, expect);
-  expect(await page.evaluate(() => window.testDevices.workers[0].messages.at(-1).audio.length)).toBe(480_000);
+  expect(await page.evaluate(() => window.testDevices.workers[0].messages.at(-1).audio.length)).toBe(960_000);
 });
 
 test('leaving the page clears capture and worker; stale output is ignored', async ({ page }) => {

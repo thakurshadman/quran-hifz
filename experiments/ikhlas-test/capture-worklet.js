@@ -2,7 +2,7 @@
 class CaptureProcessor extends AudioWorkletProcessor {
   constructor() {
     super();
-    this.remaining = Math.floor(sampleRate * 30);
+    this.remaining = Math.floor(sampleRate * 60);
     this.buffer = new Float32Array(1024);
     this.used = 0;
     this.active = true;

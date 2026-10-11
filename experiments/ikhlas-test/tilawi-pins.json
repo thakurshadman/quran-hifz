@@ -1,0 +1,32 @@
+{
+  "repo": "muhdur/tilawi-fastconformer-quran",
+  "revision": "e9448a0e84f3adb64c28b7a8db501dd8e0e59a84",
+  "license": "CC-BY-4.0",
+  "files": [
+    {
+      "path": "SHA256SUMS",
+      "bytes": 338,
+      "sha256": "eb59372b6027b73d4c1d2c6e1d939412b830642b3f5e22d9617e042e6b4b8142"
+    },
+    {
+      "path": "TANZIL-NOTICE.txt",
+      "bytes": 1818,
+      "sha256": "d6969b1f032628ed72e8d06fd5cc976ae3b88f3348f08ff08458676f072a797d"
+    },
+    {
+      "path": "fastconformer_full_mixed.onnx",
+      "bytes": 88307366,
+      "sha256": "4767182cd92975869f81a7e32700b14ca2b04e8dc97a15ff220a8697f4639488"
+    },
+    {
+      "path": "quran.json",
+      "bytes": 3186385,
+      "sha256": "6e6f31f642c701b49a1ba090311ca4c7a97c6a5b79a302712dff815a9d7b3d03"
+    },
+    {
+      "path": "vocab.json",
+      "bytes": 21062,
+      "sha256": "c55877f3bff8bc3aaefc160e8c2fb88cb349088d092513d40210ccfe535e671b"
+    }
+  ]
+}
