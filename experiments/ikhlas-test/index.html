@@ -5,28 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#f4f3eb">
     <meta name="referrer" content="no-referrer">
-    <title>Word practice · Qur’an Hifz</title>
+    <title>Qur’an Hifz · Practice</title>
     <link rel="stylesheet" href="./styles.css">
   </head>
   <body>
     <main>
-      <header class="brand"><span class="brand-mark" aria-hidden="true">◈</span> Qur’an Hifz <span class="pill">Speech experiment</span></header>
+      <header class="brand"><span class="brand-mark" aria-hidden="true">◈</span> Qur’an Hifz <span class="pill">Personal practice</span></header>
       <section class="intro" aria-labelledby="title">
-        <p class="eyebrow">A small first step</p>
-        <h1 id="title">Practice the words.</h1>
+        <p class="eyebrow">A little practice, every day</p>
+        <h1 id="title">Keep your memorization close.</h1>
         <p class="lede">Look for possible whole-word skips and repeated verses.</p>
-        <p class="intro-note">Al-Fatiha or Al-Ikhlas · Up to 60 seconds · No score</p>
+        <p class="intro-note">Juz 29 · Al-Fatiha · Al-Ikhlas</p>
       </section>
       <section class="test-card" aria-labelledby="test-title">
-        <div class="card-heading"><h2 id="test-title">Your recitation test</h2><span id="state-badge" class="pill">Not loaded</span></div>
+        <div class="card-heading"><h2 id="test-title">Your practice</h2><span id="state-badge" class="pill">Not loaded</span></div>
         <p id="status" role="status" aria-live="polite" aria-atomic="true">Load the speech model to begin. Your microphone stays off until you press Start.</p>
-        <div class="passage-options"><label for="surah">Passage</label> <select id="surah"><option value="112">Al-Ikhlas</option><option value="1">Al-Fatiha</option></select><label><input id="basmala" type="checkbox" checked> Include the opening basmala (always included for Al-Fatiha)</label></div>
+        <div class="passage-options"><label for="surah">Passage</label> <select id="surah"><option value="112">Al-Ikhlas</option><option value="1">Al-Fatiha</option><option value="67">Al-Mulk</option><option value="68">Al-Qalam</option><option value="69">Al-Haqqah</option><option value="70">Al-Ma’arij</option><option value="71">Nuh</option><option value="72">Al-Jinn</option><option value="73">Al-Muzzammil</option><option value="74">Al-Muddaththir</option><option value="75">Al-Qiyamah</option><option value="76">Al-Insan</option><option value="77">Al-Mursalat</option></select><label><input id="basmala" type="checkbox" checked> Include the opening basmala (Al-Fatiha verse 1 always includes it)</label></div>
+        <details class="practice-options"><summary>Choose verses or a random passage</summary>
+          <div class="range-grid"><label>From verse<input id="verse-first" type="number" min="1" max="4" value="1"></label><label>To verse<input id="verse-last" type="number" min="1" max="4" value="4"></label></div>
+          <div class="range-grid"><label for="scope">Random practice from<select id="scope"><option value="current">This surah</option><option value="juz29">All of Juz 29</option></select></label><label for="practice-length">Passage length<select id="practice-length"><option value="1">1 verse</option><option value="2">2 verses</option><option value="3" selected>3 verses</option></select></label></div>
+          <button id="random" class="secondary" type="button" disabled>Pick a passage</button>
+        </details>
+        <div class="practice-bar"><p id="passage-label">Al-Ikhlas · verses 1–4</p><button id="reveal" type="button" class="text-button" disabled>Show first verse</button></div>
+        <div id="cue" class="cue" hidden><p id="cue-text" lang="ar" dir="rtl"></p><small>Read this cue, then recite your selected range from memory. It hides when you start. Source verse 1 includes the basmala even if you chose to omit it.</small></div>
         <div class="meter-row"><span id="mic-label">Microphone off</span><span id="timer" aria-label="Recording time">0:00 / 1:00</span></div>
         <meter id="level" min="0" max="1" value="0" aria-label="Microphone input level"></meter>
         <div class="actions">
-          <button id="load" class="primary" type="button">Load speech test <span aria-hidden="true">↓</span></button>
+          <button id="load" class="primary" type="button">Load practice <span aria-hidden="true">↓</span></button>
+          <button id="reload-app" class="primary" type="button" hidden>Reload page</button>
           <button id="start" class="primary" type="button" hidden>Start reciting <span aria-hidden="true">●</span></button>
-          <button id="stop" class="primary" type="button" hidden>Stop &amp; transcribe <span aria-hidden="true">■</span></button>
+          <button id="stop" class="primary" type="button" hidden>Finish reciting <span aria-hidden="true">■</span></button>
           <button id="cancel" class="secondary" type="button" hidden>Cancel</button>
           <button id="clear" class="secondary" type="button" hidden>Clear result</button>
         </div>
@@ -41,9 +49,11 @@
         <h3>Word check</h3>
         <p id="word-summary" role="status"></p><ul id="word-findings"></ul>
         <p><strong>Pronunciation: unsure.</strong> Missing sounds and tajweed are not assessed.</p>
-        <details><summary>Reference for your own review</summary><p>Verbatim source verses. Al-Ikhlas verse 1 includes the opening in this source; the checkbox only changes the comparison scope.</p><div id="reference-verses"></div></details>
-        <p class="device-note">This is a rough speech test, not a judgement of your recitation or tajwīd.</p>
+        <details><summary>Reference for your own review</summary><p>Original source verses. The source includes the basmala in verse 1 outside Al-Fatiha; your opening choice only changes the word check.</p><div id="reference-verses"></div></details>
+        <div class="actions"><button id="next-practice" class="primary" type="button">Next passage →</button></div>
+        <p class="device-note">Possible findings need your review. This does not judge tajweed.</p>
       </section>
+      <p class="session-note"><span id="session-count">0</span> attempts this visit · nothing saved</p>
       <aside class="privacy" aria-labelledby="privacy-title">
         <span class="privacy-icon" aria-hidden="true">↳</span>
         <div><h2 id="privacy-title">Your voice stays on this device.</h2>
@@ -51,7 +61,7 @@
           <p>Audio is held briefly in memory and cleared after processing or cancellation. Results stay on this page until you clear them, start again, leave the page or switch tabs. We do not save recordings or transcripts.</p>
         </div>
       </aside>
-      <footer>Experimental word feedback. Recognition can miss or invent words.<br><a href="https://huggingface.co/muhdur/tilawi-fastconformer-quran">Tilawi model (CC-BY-4.0)</a> · <a href="https://tanzil.net">Qur’an text: Tanzil</a> · <a href="https://huggingface.co/muhdur/tilawi-fastconformer-quran/blob/e9448a0e84f3adb64c28b7a8db501dd8e0e59a84/TANZIL-NOTICE.txt">Pinned text notice</a></footer>
+      <footer>Personal practice · Word feedback is experimental.<br><a href="https://huggingface.co/muhdur/tilawi-fastconformer-quran">Tilawi model (CC-BY-4.0)</a> · <a href="https://tanzil.net">Qur’an text: Tanzil</a> · <a href="https://huggingface.co/muhdur/tilawi-fastconformer-quran/blob/e9448a0e84f3adb64c28b7a8db501dd8e0e59a84/TANZIL-NOTICE.txt">Pinned text notice</a></footer>
     </main>
     <noscript><p>This speech test needs JavaScript enabled.</p></noscript>
     <script type="module" src="./app.js"></script>

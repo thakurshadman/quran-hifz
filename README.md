@@ -3,10 +3,13 @@
 A focused memorization-testing project: hear an authentic recorded prompt,
 continue reciting, and receive honest word-level feedback.
 
-**Status: early speech experiments.** A small Al-Ikhlas transcription prototype
-and a reproducible model-comparison harness exist. The full memorization app and
-its production stack are not selected. Product targets remain proposals; one
-recording is not evidence that the full benchmark targets have been met.
+**Status: personal practice app with a Rust/WASM core.** Choose verses from
+Juz 29, Al-Fatiha or Al-Ikhlas, recite locally, and review possible skips/repeats.
+[Run the app and its tests](experiments/ikhlas-test/README.md).
+
+Speech feedback remains experimental. The full original MVP is not complete:
+reliable live feedback, authentic recorded prompts and pronunciation detection
+are not established. No software check replaces qualified Qur’an-content review.
 
 The first milestone, **M0 — Technical Feasibility**, asks whether real-time Qur’an
 recitation tracking can meet acceptable accuracy, latency, privacy, and cost.
@@ -44,8 +47,8 @@ before a PR. The same checks and seeded regressions run in GitHub Actions.
 Required-check/approval protection is proposed, not configured by these files;
 see the [current evidence and remaining gate](docs/testing/DOCUMENTATION-CI.md#proposed-repository-protection).
 
-Rust, WASM, frontend framework, speech recognizer, inference location, data
-sources, hosting, and database remain unselected. Future code and data licenses
+Rust/WASM is selected for the personal app in [ADR-001](docs/architecture/adr/ADR-001-rust-practice-core.md).
+Other production architecture decisions remain open. Future code and data licenses
 also need explicit decisions; public visibility alone does not grant a license.
 
 ## Planning source

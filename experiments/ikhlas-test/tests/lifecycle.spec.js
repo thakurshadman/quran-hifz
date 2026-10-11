@@ -7,7 +7,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 async function load(page) {
-  await page.getByRole('button', { name: 'Load speech test' }).click();
+  await page.getByRole('button', { name: 'Load practice' }).click();
   await expect(page.getByRole('button', { name: 'Start reciting' })).toBeVisible();
 }
 async function record(page) {
@@ -18,12 +18,12 @@ async function record(page) {
 async function transcribe(page) {
   await record(page);
   await page.evaluate(() => window.testDevices.pushSamples(48_000));
-  await page.getByRole('button', { name: 'Stop & transcribe' }).click();
+  await page.getByRole('button', { name: 'Finish reciting' }).click();
   await expect(page.locator('#state-badge')).toHaveText('Working');
 }
 
 test('does not request microphone until deliberate Start; controls fit and are named', async ({ page }) => {
-  await expect(page.getByRole('heading', { name: 'Practice the words.' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Keep your memorization close.' })).toBeVisible();
   await expect(page.getByRole('status')).toContainText('microphone stays off');
   expect(await page.evaluate(() => window.testDevices.requests)).toBe(0);
   await page.keyboard.press('Tab');
@@ -31,7 +31,9 @@ test('does not request microphone until deliberate Start; controls fit and are n
   await page.keyboard.press('Tab');
   await expect(page.getByRole('checkbox')).toBeFocused();
   await page.keyboard.press('Tab');
-  await expect(page.getByRole('button', { name: 'Load speech test' })).toBeFocused();
+  await expect(page.locator('.practice-options summary')).toBeFocused();
+  await page.keyboard.press('Tab');
+  await expect(page.getByRole('button', { name: 'Load practice' })).toBeFocused();
   await page.keyboard.press('Enter');
   await expect(page.getByRole('button', { name: 'Start reciting' })).toBeVisible();
   expect(await page.evaluate(() => window.testDevices.requests)).toBe(0);
@@ -116,11 +118,11 @@ test('device loss releases capture and provides a retry without grading', async 
 
 test('cancelling model download rejects a late ready response', async ({ page }) => {
   await page.evaluate(() => { window.testDevices.autoReady = false; });
-  await page.getByRole('button', { name: 'Load speech test' }).click();
+  await page.getByRole('button', { name: 'Load practice' }).click();
   await page.getByRole('button', { name: 'Cancel' }).click();
   expect(await page.evaluate(() => window.testDevices.workers[0].terminated)).toBe(true);
   await page.evaluate(() => window.testDevices.workers[0].emit({ type: 'ready' }));
-  await expect(page.getByRole('button', { name: 'Load speech test' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Load practice' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Start reciting' })).toBeHidden();
   expect(await page.evaluate(() => window.testDevices.requests)).toBe(0);
 });
@@ -180,7 +182,7 @@ test('model failure and timeout offer retry, never a score', async ({ page }) =>
   await transcribe(page);
   await page.clock.fastForward(180_000);
   await expect(page.getByRole('status')).toContainText('too long');
-  await expect(page.getByRole('button', { name: 'Load speech test' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Load practice' })).toBeVisible();
   await expect(page.locator('#result-panel')).toBeHidden();
   await load(page);
   await page.evaluate(() => window.testDevices.workers.at(-1).emit({ type: 'error' }));

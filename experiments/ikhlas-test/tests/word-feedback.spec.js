@@ -10,7 +10,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 async function load(page) {
-  await page.getByRole('button', { name: 'Load speech test' }).click();
+  await page.getByRole('button', { name: 'Load practice' }).click();
   await expect(page.getByRole('button', { name: 'Start reciting' })).toBeVisible();
 }
 
@@ -18,7 +18,7 @@ async function transcribe(page) {
   await page.getByRole('button', { name: /^(Start reciting|Try again)/ }).click();
   await expect(page.locator('#mic-label')).toHaveText('Microphone on');
   await page.evaluate(() => window.testDevices.pushSamples(48_000));
-  await page.getByRole('button', { name: 'Stop & transcribe' }).click();
+  await page.getByRole('button', { name: 'Finish reciting' }).click();
   await expect(page.locator('#state-badge')).toHaveText('Working');
 }
 
@@ -83,7 +83,7 @@ test('changing passage during inference terminates it and ignores late results',
   await load(page);
   await transcribe(page);
   await page.getByRole('combobox', { name: 'Passage' }).selectOption('1');
-  await expect(page.getByRole('button', { name: 'Load speech test' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Load practice' })).toBeVisible();
   expect(await page.evaluate(() => window.testDevices.workers[0].terminated)).toBe(true);
   await emit(page, ikhlas);
   await expect(page.locator('#result-panel')).toBeHidden();
@@ -105,7 +105,7 @@ test('changing opening scope during permission request releases a late stream', 
   await page.getByRole('checkbox').uncheck();
   await page.evaluate(() => window.testDevices.resolvePermission());
   await expectResourcesReleased(page, expect);
-  await expect(page.getByRole('button', { name: 'Load speech test' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Load practice' })).toBeVisible();
   await expect(page.locator('#result-panel')).toBeHidden();
   await page.evaluate(() => { window.testDevices.permission = 'allow'; });
   await load(page);
@@ -137,7 +137,7 @@ test('empty recognition and malformed reference produce no word diagnosis', asyn
   await expect(page.locator('#word-findings')).toBeEmpty();
   await page.reload();
   await page.evaluate(() => { window.testDevices.records.pop(); });
-  await page.getByRole('button', { name: 'Load speech test' }).click();
+  await page.getByRole('button', { name: 'Load practice' }).click();
   await expect(page.locator('#status')).toContainText('reference could not be verified');
   await expect(page.getByRole('button', { name: 'Start reciting' })).toBeHidden();
   expect(await page.evaluate(() => window.testDevices.requests)).toBe(0);
