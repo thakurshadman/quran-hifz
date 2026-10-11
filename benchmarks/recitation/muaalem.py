@@ -190,7 +190,7 @@ def run(args, pins):
     report = {"schema_version": 1, "privacy": "PRIVATE: contains raw phoneme hypotheses; do not publish",
               "environment": environment_info(),
               "pins": pins, "pins_sha256": sha256_file(HERE / "muaalem-pins.json"),
-              "runtime_lock_sha256": sha256_file(HERE / "qwen-requirements-linux-cpu.lock"),
+              "runtime_lock_sha256": sha256_file(getattr(args, "runtime_lock", HERE / "qwen-requirements-linux-cpu.lock")),
               "implementation_sha256": {name: sha256_file(HERE / name) for name in
                                          ("muaalem.py", "batch.py", "benchmark.py")},
               "settings": {"sample_rate": 16000, "channels": 1, "format": "float32 little-endian",
@@ -268,6 +268,8 @@ def main(argv=None):
         if command == "run":
             sub.add_argument("--audio", action="append", required=True)
             sub.add_argument("--output", required=True)
+            sub.add_argument("--runtime-lock", type=Path, default=HERE / "qwen-requirements-linux-cpu.lock",
+                             help="Version lock describing the installed research environment")
     args = parser.parse_args(argv)
     try:
         pins = validate_pins(json.loads((HERE / "muaalem-pins.json").read_text()))
