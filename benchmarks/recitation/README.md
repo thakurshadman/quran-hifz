@@ -10,6 +10,7 @@ The [repeated-audio test](REPETITION.md) checks whether Tilawi and Mohammed’s 
 when exactly the same recording is played twice.
 
 The [Muaalem sound-level test](MUAALEM.md) inspects raw phoneme predictions.
+The [CROTTC k3 test](CROTTC.md) checks another sound-level model.
 The [leaderboard research](PHONEME-MODELS.md) covers RAM, Utokyo and SQZ_ww.
 
 This ASR-004 experiment compares four recognizers using the **same audio**,

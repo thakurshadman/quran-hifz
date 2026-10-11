@@ -1,0 +1,54 @@
+{
+  "model_revision": "0080a8b337e6a78dc12fc3e3fb1b6f0f4c2b1c67",
+  "base_config_revision": "c1423ed94bb01d80a3f5ce5bc39f6026a0f4828c",
+  "files": [
+    {
+      "name": "model.ckpt",
+      "bytes": 15355760,
+      "sha256": "7ea8f25867a0319939a27e879ef40b2075b30a9ecfa2397c2a2be8c839f8d386",
+      "url": "https://huggingface.co/Haopeng/iqra_CROTTC_conf_k3/resolve/0080a8b337e6a78dc12fc3e3fb1b6f0f4c2b1c67/model.ckpt"
+    },
+    {
+      "name": "perceived_ssl.ckpt",
+      "bytes": 1262009130,
+      "sha256": "baf24a1b5eca8787afc6e5fdd1de346cfa014f9f03ddcec503e726ff9d670c77",
+      "url": "https://huggingface.co/Haopeng/iqra_CROTTC_conf_k3/resolve/0080a8b337e6a78dc12fc3e3fb1b6f0f4c2b1c67/perceived_ssl.ckpt"
+    },
+    {
+      "name": "tokenizer.ckpt",
+      "bytes": 852,
+      "sha256": "59e90de98418d6c6c66d38004f910a25e3d8cda076332ad9fe4eb707536002dc",
+      "url": "https://huggingface.co/Haopeng/iqra_CROTTC_conf_k3/resolve/0080a8b337e6a78dc12fc3e3fb1b6f0f4c2b1c67/tokenizer.ckpt"
+    },
+    {
+      "name": "config.json",
+      "bytes": 2222,
+      "sha256": "a3d8fe831aaf63d725b54a8ac36f3549cd4365c5086774b2c89cabbc6f9e129d",
+      "url": "https://huggingface.co/microsoft/wavlm-large/resolve/c1423ed94bb01d80a3f5ce5bc39f6026a0f4828c/config.json"
+    },
+    {
+      "name": "preprocessor_config.json",
+      "bytes": 214,
+      "sha256": "60ca5a31e13f69ee2fbf147504c8676db5f6398fd7a6b12294341dff838edfcf",
+      "url": "https://huggingface.co/microsoft/wavlm-large/resolve/c1423ed94bb01d80a3f5ce5bc39f6026a0f4828c/preprocessor_config.json"
+    },
+    {
+      "name": "inference.yaml",
+      "bytes": 10756,
+      "sha256": "12f5b28059d753ea664fd13af31bc7631c3e0d8d37e3ddac60ae4fae7f93e2cb",
+      "url": "https://huggingface.co/Haopeng/iqra_CROTTC_conf_k3/resolve/0080a8b337e6a78dc12fc3e3fb1b6f0f4c2b1c67/inference.yaml"
+    },
+    {
+      "name": "README.md",
+      "bytes": 571,
+      "sha256": "509c3f435961a67183f9839be302887fc665285c0a71be0e986e4eea574264b1",
+      "url": "https://huggingface.co/Haopeng/iqra_CROTTC_conf_k3/resolve/0080a8b337e6a78dc12fc3e3fb1b6f0f4c2b1c67/README.md"
+    },
+    {
+      "name": "LICENSE",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "url": "https://huggingface.co/Haopeng/iqra_CROTTC_conf_k3/resolve/0080a8b337e6a78dc12fc3e3fb1b6f0f4c2b1c67/LICENSE"
+    }
+  ]
+}
