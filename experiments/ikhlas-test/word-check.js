@@ -8,7 +8,14 @@ if (typeof process !== 'undefined' && process.versions?.node) {
   const { readFile } = await import(/* @vite-ignore */ moduleName);
   await init({ module_or_path: await readFile(wasmUrl) });
 } else {
-  await init({ module_or_path: wasmUrl });
+  const controller = new AbortController();
+  const deadline = setTimeout(() => controller.abort(), 15000);
+  try {
+    const response = await fetch(wasmUrl, { signal: controller.signal });
+    if (!response.ok) throw new Error('Engine unavailable');
+    const bytes = await response.arrayBuffer();
+    await init({ module_or_path: bytes });
+  } finally { clearTimeout(deadline); }
 }
 } catch { coreError = 'The practice engine could not load. Reload the page to try again.'; }
 const unpack = data => JSON.parse(data).map(v => ({ ...v, words: v.words.map(w => ({ ...w, forms: new Set(w.forms) })) }));

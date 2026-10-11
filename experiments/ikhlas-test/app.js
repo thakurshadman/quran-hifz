@@ -257,9 +257,11 @@ ui.reveal.addEventListener('click',() => {
 });
 
 const reloadApp = document.getElementById('reload-app');
-reloadApp.addEventListener('click', () => location.reload());
 if (coreError) {
   display('idle', coreError);
   ui.load.disabled = true;
   reloadApp.hidden = false;
+} else {
+  ui.load.disabled = false;
+  display('idle', 'Load the speech model to begin. Your microphone stays off until you press Start.');
 }

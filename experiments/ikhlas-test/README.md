@@ -30,6 +30,14 @@ The first load downloads about 106 MB including model, reference and runtime.
 These public files may be cached. Slow phones may take longer or run out of
 memory. iPhone, Android and desktop still need physical-device testing.
 
+## If Load practice does nothing
+
+The button stays disabled while the app starts. A blocked engine download times
+out after 15 seconds; a blocked app import shows a reload option within 20 seconds.
+If ChatGPT's built-in browser will not load it, open the private link in Chrome
+or Safari and sign in with the same account. The standalone hosted Chromium
+loading path was checked; the built-in browser has not been qualified.
+
 ## How the comparison works
 
 Tilawi produces a raw transcription without receiving the expected passage as

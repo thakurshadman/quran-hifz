@@ -19,7 +19,7 @@
       </section>
       <section class="test-card" aria-labelledby="test-title">
         <div class="card-heading"><h2 id="test-title">Your practice</h2><span id="state-badge" class="pill">Not loaded</span></div>
-        <p id="status" role="status" aria-live="polite" aria-atomic="true">Load the speech model to begin. Your microphone stays off until you press Start.</p>
+        <p id="status" role="status" aria-live="polite" aria-atomic="true">Starting the app… Your microphone is off.</p>
         <div class="passage-options"><label for="surah">Passage</label> <select id="surah"><option value="112">Al-Ikhlas</option><option value="1">Al-Fatiha</option><option value="67">Al-Mulk</option><option value="68">Al-Qalam</option><option value="69">Al-Haqqah</option><option value="70">Al-Ma’arij</option><option value="71">Nuh</option><option value="72">Al-Jinn</option><option value="73">Al-Muzzammil</option><option value="74">Al-Muddaththir</option><option value="75">Al-Qiyamah</option><option value="76">Al-Insan</option><option value="77">Al-Mursalat</option></select><label><input id="basmala" type="checkbox" checked> Include the opening basmala (Al-Fatiha verse 1 always includes it)</label></div>
         <details class="practice-options"><summary>Choose verses or a random passage</summary>
           <div class="range-grid"><label>From verse<input id="verse-first" type="number" min="1" max="4" value="1"></label><label>To verse<input id="verse-last" type="number" min="1" max="4" value="4"></label></div>
@@ -31,14 +31,14 @@
         <div class="meter-row"><span id="mic-label">Microphone off</span><span id="timer" aria-label="Recording time">0:00 / 1:00</span></div>
         <meter id="level" min="0" max="1" value="0" aria-label="Microphone input level"></meter>
         <div class="actions">
-          <button id="load" class="primary" type="button">Load practice <span aria-hidden="true">↓</span></button>
+          <button id="load" class="primary" type="button" disabled>Load practice <span aria-hidden="true">↓</span></button>
           <button id="reload-app" class="primary" type="button" hidden>Reload page</button>
           <button id="start" class="primary" type="button" hidden>Start reciting <span aria-hidden="true">●</span></button>
           <button id="stop" class="primary" type="button" hidden>Finish reciting <span aria-hidden="true">■</span></button>
           <button id="cancel" class="secondary" type="button" hidden>Cancel</button>
           <button id="clear" class="secondary" type="button" hidden>Clear result</button>
         </div>
-        <p class="device-note">About 106 MB to download the first time. Use a recent browser; slower phones may need a few minutes.</p>
+        <p class="device-note">About 106 MB to download the first time. If this page will not load in ChatGPT’s browser, open it in Chrome or Safari. Slower phones may need a few minutes.</p>
       </section>
       <section id="result-panel" class="result-card" aria-labelledby="result-title" hidden>
         <p class="eyebrow">What the model heard</p>
@@ -64,6 +64,6 @@
       <footer>Personal practice · Word feedback is experimental.<br><a href="https://huggingface.co/muhdur/tilawi-fastconformer-quran">Tilawi model (CC-BY-4.0)</a> · <a href="https://tanzil.net">Qur’an text: Tanzil</a> · <a href="https://huggingface.co/muhdur/tilawi-fastconformer-quran/blob/e9448a0e84f3adb64c28b7a8db501dd8e0e59a84/TANZIL-NOTICE.txt">Pinned text notice</a></footer>
     </main>
     <noscript><p>This speech test needs JavaScript enabled.</p></noscript>
-    <script type="module" src="./app.js"></script>
+    <script type="module" src="./bootstrap.js"></script>
   </body>
 </html>
